@@ -1,0 +1,185 @@
+﻿#saved-mission-skills-list .list-group-item {
+    border: none;
+}
+
+/****** Mission Images Dropzone ******/
+.input-container #drag-drop-zone,
+.input-container #missionDocs-drag-drop-zone {
+    height: 160px;
+    border: 1px dashed var(--border-clr);
+}
+
+#drag-drop-zone .add-icon,
+#missionDocs-drag-drop-zone .add-icon{
+    font-size: 3rem;
+    color: var(--border-clr);
+}
+
+#drag-drop-zone .drag-drop-text,
+#missionDocs-drag-drop-zone .drag-drop-text{
+    color: var(--border-clr);
+}
+
+#drag-drop-zone.dragover,
+#missionDocs-drag-drop-zone.dragover{
+    border: 1px solid var(--font-clr);
+}
+
+    #drag-drop-zone.dragover *,
+    #missionDocs-drag-drop-zone.dragover *{
+        color: var(--font-clr);
+    }
+
+#mission-image-preview,
+#mission-documents-preview{
+    min-height: auto;
+    border: none;
+    padding: 0;
+}
+
+/* Dropzone Preview styling*/
+    #mission-image-preview.dropzone .dz-preview {
+        margin: 8px 16px 8px 0;
+    }
+
+#mission-image-preview.dropzone .dz-preview .dz-image {
+    width: 112px;
+    height: 112px;
+    border-radius: 0;
+    z-index: 2;
+}
+
+    #mission-image-preview.dropzone .dz-preview .dz-image img {
+        width: 100%;
+        height: 100%;
+    }
+
+        #mission-image-preview.dropzone .dz-preview .dz-details {
+            z-index: 3;
+        }
+
+        #mission-image-preview.dropzone .dz-preview .dz-progress {
+            z-index: 5;
+            top: 50%;
+            height: 12px;
+            opacity: 0;
+        }
+
+        #mission-image-preview.dropzone .dz-preview .dz-success-mark,
+        #mission-image-preview.dropzone .dz-preview .dz-error-mark {
+            z-index: 6;
+            margin-left: 0 !important;
+            margin-top: 0 !important;
+            transform: translate(-50%, -50%) !important;
+        }
+
+            #mission-image-preview.dropzone .dz-preview .dz-success-mark .mark-icon,
+            #mission-image-preview.dropzone .dz-preview .dz-error-mark .mark-icon {
+                color: #FFFFFF;
+                font-size: 32px;
+            }
+
+        #mission-image-preview.dropzone .dz-preview .dz-remove {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 10;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 2px 4px;
+            border-radius: 0;
+        }
+
+            #mission-image-preview.dropzone .dz-preview .dz-remove * {
+                color: #FFFFFF;
+            }
+
+
+/****** Mission Documents Dropzone ******/
+#missionDocs-template .preview .dz-image {
+    width: 40px !important;
+}
+
+div.table {
+    display: table;
+}
+
+    div.table > :not(caption) > * > td > .error{
+        padding: 0;
+    }
+
+#missionDocs-template .img-thumbnail-col,
+#missionDocs-template .file-size-col{
+    width: 10%;
+}
+#missionDocs-template .file-name-col{
+    width: 65%;
+}
+#missionDocs-template .file-action-col{
+    width: 15%;
+}
+
+div.table .file-row {
+    display: table-row;
+}
+
+        div.table .file-row > div {
+            display: table-cell;
+            vertical-align: top;
+            border-top: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        div.table .file-row:nth-child(odd) {
+            background: #f9f9f9;
+        }
+/* Hide the progress bar when finished */
+#previews .file-row.dz-success .progress {
+    opacity: 0;
+    transition: opacity 0.3s linear;
+}
+
+
+/** Add skills Modal **/
+#mission-add-skills-modalBody .skill-selector-wrapper {
+    height: 65vh;
+    max-height: 65vh;
+    /*overflow-y: auto;*/
+}
+
+.skill-selector-wrapper .skill-selector-item {
+    height: 100%;
+    overflow-y: auto;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+    .skill-selector-wrapper .skill-selector-item::-webkit-scrollbar {
+        display: none;
+    }
+
+
+#mission-add-skills-modal .mission-skill-list .list-group-item {
+    /*margin-bottom: 2px;*/
+}
+
+    #mission-add-skills-modal .mission-skill-list .list-group-item:hover {
+        background-color: var(--hover-bg-clr);
+    }
+
+    #mission-add-skills-modal .mission-skill-list .list-group-item.active {
+        background-color: var(--border-clr);
+        border-color: transparent;
+    }
+
+
+/*-*-*-*-* Responsive media query *-*-*-*-*/
+@media(max-width: 768px) {
+    #mission-selected-skills,
+    #mission-skill-select {
+        height: 45%;
+    }
+
+    #mission-modal-skill-actions {
+        height: 10%;
+    }
+}

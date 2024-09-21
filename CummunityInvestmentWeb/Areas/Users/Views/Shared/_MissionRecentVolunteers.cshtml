@@ -1,0 +1,104 @@
+﻿@model MissionRecentVolunteersVM
+@{
+    List<MissionApplication> _MissionApplications = Model.MissionApplications;
+    var _Pager = Model.Pager;
+    //Pager Pager = (Pager)ViewData["Pager"];
+}
+
+<div class="p-3">
+    <div class="title-underline-wrapper mb-4">
+        <h3 class="h3 title pb-3">Recent Volunteers</h3>
+    </div>
+    <div class="recent-volunteers-wrapper">
+        @if (_MissionApplications.Count() > 0)
+        {
+            <div class="row g-3">
+                @foreach (var missionApplication in _MissionApplications)
+                {
+                    <div class="col-4">
+                        <div class="volunteer content-center flex-column">
+                            @if (missionApplication.User.Avatar != null)
+                            {
+                                <img src="@missionApplication.User.Avatar" class="volunteer-img">
+                            }
+                            else
+                            {
+                                <img src="~/assets/user-profile-avatar.svg" class="volunteer-img">
+                            }
+                            <span class="volunteer-name text-center">@missionApplication.User.FirstName @missionApplication.User.LastName</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="content-center">
+                No Recent Volunteers!
+                </div>
+        }
+    </div>
+</div>
+<div class="volunteer-pagination">
+    <nav aria-label="Volunteer Pagination">
+        <ul class="pagination">
+            <li class="page-item">
+                @if (_Pager.CurrentPage <= 1)
+                {
+                    <input class="d-none" type="radio" name="recentVolunteersPage" id="pg-prev" disabled />
+                }
+                else
+                {
+                    <input class="d-none" type="radio" name="recentVolunteersPage" id="pg-prev" value=@(_Pager.CurrentPage - 1) />
+                }
+                <label class="page-link" for="pg-prev" aria-label="Previous">
+                    <i class="bi bi-chevron-left"></i>
+                </label>
+            </li>
+            <li class="page-item pagination-description content-center">
+                <span>@_Pager.ItemFrom - @(_Pager.ItemTo) of @_Pager.TotalItems Recent Volunteers</span>
+            </li>
+            <li class="page-item">
+                @*<button class="page-link" href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <i class="bi bi-chevron-right"></i>
+                </button>*@
+                @if (_Pager.CurrentPage >= _Pager.TotalPages)
+                {
+                    <input class="d-none" type="radio" name="recentVolunteersPage" id="pg-next" disabled />
+                }
+                else
+                {
+                    <input class="d-none" type="radio" name="recentVolunteersPage" id="pg-next" value=@(_Pager.CurrentPage + 1) />
+                }
+                <label class="page-link" for="pg-next" aria-label="Next">
+                    <i class="bi bi-chevron-right"></i>
+                </label>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('input[type=radio][name=recentVolunteersPage]').change(function () {
+            const pathname = window.location.pathname;
+            const pathArray = pathname.split('/');
+            const missionId = +pathArray[pathArray.length - 1];
+            let pageNo = $('input[type=radio][name=recentVolunteersPage]:checked').val();
+            $.ajax({
+                method: 'POST',
+                url: '/Users/Home/GetRecentVolunteers',
+                datatype: "html",
+                data: { missionId: missionId, recentVolunteersPage: pageNo },
+                success: function (response) {
+                    console.log(response);
+                    $("#recent-volunteers-container").html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.log("Ajax error : " + error);
+                }
+            })
+        });
+    })
+</script>

@@ -1,0 +1,64 @@
+﻿@model List<Comment>
+
+@foreach (var missionComment in Model)
+{
+    <div class="card comment-card p-3 mb-3">
+        <div class="row gx-2">
+            <div class="col-2 comment-img-wrapper content-center">
+                @if (missionComment.User.Avatar != null)
+                {
+                    <img src="@missionComment.User.Avatar" class="commentor-img img-fluid" alt="...">
+                }
+                else
+                {
+                    <img src="~/assets/user-profile-avatar.svg" class="commentor-img img-fluid" alt="...">
+                }
+            </div>
+            <div class="col comment-content">
+                <h5 class="commentor-name m-0">@missionComment.User.FirstName @missionComment.User.LastName</h5>
+                @{
+                    //string CommentedTimespan;
+                    //DateTime start;
+                    //if (missionComment.UpdatedAt != null)
+                    //{
+                    //    start = (DateTime)missionComment.UpdatedAt;
+                    //}
+                    //else
+                    //{
+                    //    start = missionComment.CreatedAt;
+                    //}
+                    //DateTime end = DateTime.Now;
+                    //TimeSpan duration = end - start;
+                    //if ((int)duration.TotalDays > 30)
+                    //{
+                    //    CommentedTimespan = (int)duration.TotalDays / 30 + " month";
+                    //}
+                    //else if ((int)duration.TotalDays > 0)
+                    //{
+                    //    CommentedTimespan = (int)duration.TotalDays + " days";
+                    //}
+                    //else if ((int)duration.TotalHours > 0)
+                    //{
+                    //    CommentedTimespan = (int)duration.TotalHours + " hours";
+                    //}
+                    //else if ((int)duration.TotalMinutes > 0)
+                    //{
+                    //    CommentedTimespan = (int)duration.TotalMinutes + " mins";
+                    //}
+                    //else
+                    //{
+                    //    CommentedTimespan = 0 + " mins";
+                    //}
+                    <p class="card-text"><small class="text-muted">@missionComment.CreatedAt.ToString("dddd, MMMM d, yyyy, h:mm tt")</small></p>
+                }
+            </div>
+        </div>
+        <div class="row mt-2 mt-lg-0 gx-2">
+            <div class="col-2 d-none d-lg-block comment-img-wrapper">
+            </div>
+            <div class="col comment-content">
+                <p class="comment-text">@missionComment.CommentText</p>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,6 @@
+﻿.story-images-wrapper .expanded-img-view {
+    width: 100%;
+    max-height: 625px;
+    height: 50vh;
+    border: 1px solid var(--border-clr);
+}

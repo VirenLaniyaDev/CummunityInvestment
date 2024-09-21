@@ -1,0 +1,462 @@
+﻿@using System.Security.Claims;
+@model PageList<MissionsDetailsVM>
+@{
+    ViewData["Title"] = "Home Page";
+    var userIdentifier = User.FindFirst(ClaimTypes.NameIdentifier);
+    Pager _Pager = new Pager();
+    List<MissionsDetailsVM> _Missions = Model != null ? Model.Items ?? new List<MissionsDetailsVM>() : new List<MissionsDetailsVM>();
+    if (Model?.Pager != null)
+    {
+        _Pager = Model.Pager;
+    }
+}
+@section Styles{
+    <link rel="stylesheet" href="@Url.Content("~/css/Home/Index.css")" asp-append-version="true" />
+
+    <script type="text/javascript">
+        const userIdentifier = @Convert.ToInt64(userIdentifier?.Value);
+    </script>
+}
+
+@section SearchBtn{
+    <button class="btn nav-option d-md-none" id="search-btn">
+        <i class="bi bi-search"></i>
+    </button>
+}
+
+@section SearchFilterBar{
+    <form id="filter-form" method="post" asp-action="FilterMission">
+        <nav class="navbar navbar-expand-md search-filter-nav d-none d-md-block">
+            <div class="container h-100">
+                <div class="search-bar flex-grow-1">
+                    <input class="form-control" name="SearchInput" type="search" placeholder="Search mission" aria-label="Search">
+                </div>
+                <button class="navbar-toggler filter-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#filter" aria-controls="filter">
+                    <i class="bi bi-sliders2-vertical md-icon"></i>
+                </button>
+                <div class="offcanvas offcanvas-end filters-container" tabindex="-1" id="filter" aria-labelledby="offcanvasNavbarLabel">
+                    <div class="offcanvas-header">
+                        <button type="button" class="btn back-btn" data-bs-dismiss="offcanvas" aria-label="Close">
+                            <i class="bi bi-arrow-left rg-icon"></i>
+                        </button>
+                        <button type="reset" id="offcanvas-form-clear" class="btn">Clear All</button>
+                    </div>
+                    <div class="offcanvas-body filters">
+                        <div class="btn-group filter-by">
+                            <button class="btn dropdown-toggle" type="button" data-bs-auto-close="outside" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="name-down">Country</span>
+                                <i class="bi bi-chevron-down rg-icon"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end filter-dropdown-menu">
+                                <ul class="list-group list-group-flush">
+                                    @foreach (Country country in ViewBag.Countries)
+                                    {
+                                        <li class="list-group-item">
+                                            @if (User.FindFirst("countryId") != null && User.FindFirstValue("countryId") == country.CountryId.ToString())
+                                            {
+                                                <input type="radio" name="CountryFilter" class="btn-check" id="country-@country.CountryId" value="@country.Name" autocomplete="on" checked>
+                                            }
+                                            else if (User.FindFirst("countryId") == null && country.CountryId == 98)
+                                            {
+                                                <input type="radio" name="CountryFilter" class="btn-check" id="country-@country.CountryId" value="@country.Name" autocomplete="on" checked>
+                                            }
+                                            else
+                                            {
+                                                <input type="radio" name="CountryFilter" class="btn-check" id="country-@country.CountryId" value="@country.Name" autocomplete="on">
+                                            }
+                                            <label class="stretched-link" for="country-@country.CountryId">@country.Name</label>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="filter-by btn-group">
+                            <button class="btn dropdown-toggle" type="button" data-bs-auto-close="outside" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="name-down">City</span>
+                                <i class="bi bi-chevron-down rg-icon"></i>
+                            </button>
+                            @*@{await Html.RenderPartialAsync("../Shared/_Viewlist", (IEnumerable<City>)ViewBag.Cities);}*@
+                            <div class="dropdown-menu dropdown-menu-end filter-dropdown-menu">
+                                <ul class="list-group list-group-flush" id="city-dropdown-menu">
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="filter-by btn-group">
+                            <button class="btn dropdown-toggle" type="button" data-bs-auto-close="outside" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="name-down">Theme</span>
+                                <i class="bi bi-chevron-down rg-icon"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end filter-dropdown-menu">
+                                <ul class="list-group list-group-flush">
+                                    @foreach (MissionTheme theme in ViewBag.MissionThemes)
+                                    {
+                                        <li class="list-group-item">
+                                            <input type="checkbox" name="MissionThemeFilter" class="btn-check" id="mTheme-@theme.MissionThemeId" value="@theme.Title" autocomplete="off">
+                                            <label class="stretched-link" for="mTheme-@theme.MissionThemeId">@theme.Title</label>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="filter-by btn-group">
+                            <button class="btn dropdown-toggle" type="button" data-bs-auto-close="outside" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="name-down">Skills</span>
+                                <i class="bi bi-chevron-down rg-icon"></i>
+                            </button>
+                            @*<ul class="dropdown-menu dropdown-menu-end filter-dropdown-menu">
+                        @foreach (Skill missionSkill in ViewBag.MissionSkills)
+                        {
+                        <li>
+                        <input type="checkbox" name="MissionSkillFilter" class="btn-check" id="mSkill-@missionSkill.SkillId" value="@missionSkill.SkillName" autocomplete="off">
+                        <label class="btn" for="mSkill-@missionSkill.SkillId">@missionSkill.SkillName</label>
+                        </li>
+                        }
+                        </ul>*@
+                            <div class="dropdown-menu dropdown-menu-end filter-dropdown-menu">
+                                <ul class="list-group list-group-flush">
+                                    @foreach (Skill missionSkill in ViewBag.MissionSkills)
+                                    {
+                                        <li class="list-group-item">
+                                            <input type="checkbox" name="MissionSkillFilter" class="btn-check" id="mSkill-@missionSkill.SkillId" value="@missionSkill.SkillName" autocomplete="off">
+                                            <label class="stretched-link" for="mSkill-@missionSkill.SkillId">@missionSkill.SkillName</label>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <div class="container filter-labels-container d-none d-lg-block">
+        </div>
+    </form>
+}
+
+<div id="mission-container" class="position-relative">
+
+    @if (Model?.TotalItemsCount > 0)
+    {
+        <div class="mission-head d-flex flex-column flex-md-row row-gap-2 justify-content-between align-items-center mb-3">
+            <div class="explore-mission">
+                <span class="content">Explore <span class="highlight">@Model.TotalItemsCount missions</span></span>
+            </div>
+            <div class="mission-view-options">
+                <form method="post" id="mission-sort-form">
+                    <select class="form-select input" id="mission-sort" name="MissionSort">
+                        <option value="">Sort by</option>
+                        <option value="Newest">Newest</option>
+                        <option value="Oldest">Oldest</option>
+                        <option value="LowestSeats">Lowest seats</option>
+                        <option value="HighestSeats">Highest seats</option>
+                        <option value="MyFavourites">My favourites</option>
+                        <option value="RegistrationDeadline">Registration deadline</option>
+                    </select>
+                </form>
+                <div class="option-btn-container d-none d-lg-flex">
+                    <button class="btn content-center active-view" id="grid-view-btn" data-bs-toggle="tooltip" data-bs-title="Grid View">
+                        <i class="bi bi-grid md-icon"></i>
+                    </button>
+                    <button class="btn content-center" id="list-view-btn" data-bs-toggle="tooltip" data-bs-title="List View">
+                        <i class="bi bi-list md-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mission-main row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 grid-view mb-3">
+            @for (var i = 0; i < _Missions.Count(); i++)
+            {
+                <div class="col mission-card">
+                    <div class="card">
+                        <div class="row h-100">
+                            <div class="mission-img-content col-12">
+                                <div class="mission-img-wrapper">
+                                    @if (_Missions[i].MissionCardMedia != null)
+                                    {
+                                        <img src="@_Missions[i].MissionCardMedia.MediaPath" class="card-img-top">
+                                    } else
+                                    {
+                                        <img src="~/assets/no-image-available.png" class="card-img-top">
+                                    }
+                                    <div class="card-img-content card-img-overlay">
+                                        <button class="btn rounded-pill content-btn content-center">
+                                            <i class="bi bi-geo-alt md-icon"></i>
+                                            <span class="ms-1">@_Missions[i].CityName</span>
+                                        </button>
+                                        <div class="content-action-wrapper">
+                                            <form method="post" class="mission-favorite-form">
+                                                @if (userIdentifier != null)
+                                                {
+                                                    <input type="hidden" name="MissionId" value=@_Missions[i].MissionId />
+                                                    <input type="hidden" name="UserId" value=@userIdentifier?.Value />
+                                                }
+                                                <button type="submit" class="btn rounded-circle content-action-btn content-center mb-2 favorite-btn" data-bs-toggle="tooltip" data-bs-title="Favorite">
+                                                    @if (_Missions[i].IsFavorite)
+                                                    {
+                                                        <i class="bi bi-heart-fill favorite-icon md-icon icon-primary"></i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="bi bi-heart favorite-icon md-icon"></i>
+                                                    }
+                                                </button>
+                                            </form>
+                                            <button class="btn rounded-circle content-action-btn content-center recommend-to-coWorkers-btn" data-invite-mission-id=@_Missions[i].MissionId data-bs-toggle="tooltip" data-bs-title="Invite">
+                                                <i class="bi bi-person-plus md-icon"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    @if (_Missions[i].UserApplied)
+                                    {
+                                        <span class="status-badge badge bg-success bg-opacity-75">Applied</span>
+                                    }
+                                    else if (_Missions[i].EndDate < DateTime.Now)
+                                    {
+                                        <span class="status-badge badge bg-warning bg-opacity-75">Closed</span>
+                                    }
+                                    <span class="badge rounded-pill card-theme">@_Missions[i].ThemeTitle</span>
+                                </div>
+                            </div>
+                            <div class="mission-content col-12 d-flex flex-column justify-content-between">
+                                <div class="card-body">
+                                    <div class="title-text-wrapper">
+                                        <h5 class="card-title">@_Missions[i].Title</h5>
+                                        <p class="card-text">@_Missions[i].ShortDescription</p>
+                                    </div>
+                                    <div class="overview-ratings-wrapper d-flex justify-content-between">
+                                        <div class="mission-overview d-flex column-gap-3">
+                                            <div class="overview-item d-none visible-on-list">
+                                                <i class="bi bi-geo-alt"></i>
+                                                <span>@_Missions[i].CityName</span>
+                                            </div>
+                                            <div class="overview-item d-none visible-on-list">
+                                                <i class="bi bi-globe"></i>
+                                                <span>@_Missions[i].ThemeTitle</span>
+                                            </div>
+                                            <div class="overview-item">
+                                                <i class="bi bi-people"></i>
+                                                <span>@_Missions[i].OrganizationName</span>
+                                            </div>
+                                        </div>
+                                        <div class="mission-ratings">
+                                            @for (int j = 1; j <= 5; j++)
+                                            {
+                                                if (j <= _Missions[i].Ratings)
+                                                {
+                                                    <span><i class="bi bi-star-fill icon-primary"></i></span>
+                                                }
+                                                else
+                                                {
+                                                    <span><i class="bi bi-star-fill icon-unset"></i></span>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="details-action-container d-flex flex-column">
+                                    <div class="details-timeline">
+                                        @{
+                                            string missionStartDate = null, missionEndDate = null;
+                                            if (_Missions[i].StartDate != null)
+                                            {
+                                                missionStartDate = ((DateTime)_Missions[i].StartDate).ToString("dd/MM/yyyy").Replace("-", "/");
+                                            }
+                                            if (_Missions[i].EndDate != null)
+                                            {
+                                                missionEndDate = ((DateTime)_Missions[i].EndDate).ToString("dd/MM/yyyy").Replace("-", "/");
+                                            }
+                                        }
+                                        <div class="badge-divider">
+                                            @if (_Missions[i].GoalObjectiveText != null)
+                                            {
+                                                <div class="badge rounded-pill card-body-badge">
+                                                    @_Missions[i].GoalObjectiveText
+                                                </div>
+                                            }
+                                            else if(_Missions[i].StartDate <= DateTime.Today && _Missions[i].EndDate >= DateTime.Today)
+                                            {
+                                                <div class="badge rounded-pill card-body-badge">
+                                                    Ongoing Opportunity
+                                                </div>
+                                            }
+                                            else if (missionStartDate != null && missionEndDate != null)
+                                            {
+                                                <div class="badge rounded-pill card-body-badge">
+                                                    From @missionStartDate until @missionEndDate
+                                                </div>
+                                            }
+                                        </div>
+                                        <div class="info-container ps-3 pe-3 pt-1 pb-1 d-flex justify-content-between column-gap-3">
+                                            @{
+                                                int countInfoBox = 0;
+                                            }
+                                            @if (_Missions[i].MissionType == "time" && _Missions[i].GoalValue != 0 && _Missions[i].GoalValue != null)
+                                            {
+                                                <div class="info-box content-center">
+                                                    <i class="bi bi-person-check lg-icon"></i>
+                                                    <div class="info">
+                                                        <strong class="info-strong">@(_Missions[i].GoalValue - _Missions[i].TotalVolunteers)</strong>
+                                                        <div class="info-for">Seats left</div>
+                                                    </div>
+                                                </div>
+                                                countInfoBox++;
+                                            }
+                                            @if (_Missions[i].MissionType == "goal" && _Missions[i].GoalValue != 0 && _Missions[i].GoalValue != null && _Missions[i].GoalAchieved != null)
+                                            {
+                                                var barPercent = (_Missions[i].GoalAchieved * 100) / _Missions[i].GoalValue;
+                                                <div class="info-box content-center flex-grow-1">
+                                                    <i class="bi bi-bullseye lg-icon"></i>
+                                                    <div class="info">
+                                                        <div class="progress" role="progressbar" aria-label="Danger example" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                                                            <div class="progress-bar" style="width: @barPercent%"></div>
+                                                        </div>
+                                                        <div class="info-for">@_Missions[i].GoalAchieved Achieved</div>
+                                                    </div>
+                                                </div>
+                                                countInfoBox++;
+                                            }
+                                            @if (_Missions[i].RegistrationDeadline != null)
+                                            {
+                                                var registrationDeadline = ((DateTime)_Missions[i].RegistrationDeadline).ToString("dd/MM/yyyy").Replace("-", "/");
+                                                <div class="info-box content-center">
+                                                    <i class="bi bi-clock lg-icon "></i>
+                                                    <div class="info">
+                                                        <strong class="info-strong">@registrationDeadline</strong>
+                                                        <div class="info-for">Deadline</div>
+                                                    </div>
+                                                </div>
+                                                countInfoBox++;
+                                            }
+                                            <div class="info-box @(countInfoBox>=2 ? "d-none visible-on-list":"")">
+                                                <i class="bi bi-person lg-icon"></i>
+                                                <div class="info">
+                                                    <strong class="info-strong">@_Missions[i].TotalVolunteers</strong>
+                                                    <div class="info-for">Already Volunteered</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mission-action p-3 content-center">
+                                        @if (_Missions[i].UserApplied)
+                                        {
+                                            <a class="btn primary-btn action-btn" asp-controller="Home" asp-action="VolunteeringMission" asp-route-id="@_Missions[i].MissionId">
+                                                View Details
+                                                <i class="bi bi-arrow-right"></i>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a class="btn primary-btn action-btn" asp-controller="Home" asp-action="VolunteeringMission" asp-route-id="@_Missions[i].MissionId">
+                                                Apply
+                                                <i class="bi bi-arrow-right"></i>
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="modal fade" id="recommend-to-coWorkers-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable ">
+                <div class="modal-content">
+                    <div class="modal-header row">
+                        <div class="col-12 mb-3 d-flex justify-content-between align-items-center">
+                            <h1 class="modal-title fs-5" id="recommend-to-coWorkers">Recommend to Co-Workers</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="input-container col-12">
+                            <input class="form-control input" id="search-coWorker" placeholder="Search for Co-Worker">
+                        </div>
+                    </div>
+                    <div class="modal-body" id="coWorkers-modal-body">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mission-footer">
+            <form method="post" id="pagination-form">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center column-gap-2">
+                        @if (_Pager.CurrentPage >= 4)
+                        {
+                            <li class="page-item">
+                                <input class="d-none" type="radio" name="pg" id="pg-firstPg" value=1 />
+                                <label class="page-link rounded" for="pg-firstPg" aria-label="FirstPage">
+                                    <i class="bi bi-chevron-double-left"></i>
+                                </label>
+                            </li>
+                        }
+                        @if (_Pager.CurrentPage > 1)
+                        {
+                            <li class="page-item d-none d-sm-block">
+                                <input class="d-none" type="radio" name="pg" id="pg-prev" value=@(_Pager.CurrentPage - 1) />
+                                <label class="page-link rounded" for="pg-prev" aria-label="Previous">
+                                    <i class="bi bi-chevron-left"></i>
+                                </label>
+                            </li>
+                        }
+                        @for (var i = _Pager.StartPage; i <= _Pager.EndPage; i++)
+                        {
+                            // Determine if the current link should be active
+                            string activeClass = (i == _Pager.CurrentPage) ? "active" : "";
+                            // Display the page link with the appropriate class
+                            <li class="page-item @activeClass">
+                                @if (activeClass == "active")
+                                {
+                                    <input class="d-none" type="radio" id="pg-@i" name="pg" value=@i checked />
+                                }
+                                else
+                                {
+                                    <input class="d-none" type="radio" id="pg-@i" name="pg" value=@i />
+                                }
+                                <label for="pg-@i" class="page-link rounded">@i</label>
+                            </li>
+                        }
+                        @if (_Pager.CurrentPage < _Pager.TotalPages)
+                        {
+                            <li class="page-item d-none d-sm-block">
+                                <input class="d-none" type="radio" name="pg" id="pg-next" value=@(_Pager.CurrentPage + 1) />
+                                <label class="page-link rounded" for="pg-next" aria-label="Next">
+                                    <i class="bi bi-chevron-right"></i>
+                                </label>
+                            </li>
+                        }
+                        @if (_Pager.CurrentPage <= _Pager.TotalPages - 3)
+                        {
+                            <li class="page-item">
+                                <input class="d-none" type="radio" name="pg" id="pg-lastPg" value=@(_Pager.TotalPages) />
+                                <label class="page-link rounded" for="pg-lastPg" aria-label="LastPage">
+                                    <i class="bi bi-chevron-double-right"></i>
+                                </label>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </form>
+        </div>
+
+        <script src="~/js/Home/IndexMissionSection.js" asp-append-version="true"></script>
+    }
+    else
+    {
+        <div class="not-found content-center">
+            <div class="no-mission-found d-flex flex-column align-items-center">
+                <h3 class="h2 mb-3">No Mission Found</h3>
+                <a href="#" class="btn primary-btn">
+                    Submit new mission
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts{
+    <script src="~/js/Home/Index.js" asp-append-version="true"></script>
+        }

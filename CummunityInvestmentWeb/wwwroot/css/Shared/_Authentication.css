@@ -1,0 +1,146 @@
+﻿/***** side-carousel-container *****/
+.row .side-carousel-container {
+    /*    position: relative;*/
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
+.carousel,
+.carousel-inner,
+.carousel-item {
+    height: 100%;
+}
+
+.carousel-indicators button {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50%;
+}
+
+.carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.carousel-caption {
+    text-align: left;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 10%;
+    padding-right: 20%;
+    padding-bottom: 4rem;
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5), transparent);
+}
+
+    .carousel-caption .title {
+        font-weight: 400;
+        width: 85%;
+        color: #FFFFFF;
+    }
+
+    .carousel-caption .description {
+        font-size: 16px;
+        color: #FFFFFF;
+    }
+
+/***** Form Content *****/
+.form-content {
+    padding: 1rem 4rem 2rem;
+    height: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    justify-content: space-between;
+    column-gap: 16px;
+    row-gap: 16px;
+}
+
+    .form-content .form-container {
+        padding: 1rem;
+        width: 100%;
+    }
+
+.form-container::-webkit-scrollbar {
+    display: none;
+}
+
+.container-head .title {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.container-head .description,
+.ref-links-container * {
+    font-size: 14px;
+}
+
+.form-container .auth-form-btn {
+    width: 100%;
+    height: 48px;
+    font-size: 17px;
+    border: 2px solid var(--primary-clr);
+    border-radius: 24px;
+    background-color: transparent;
+    color: var(--primary-clr);
+    transition: 0.3s ease;
+}
+
+    .form-container .auth-form-btn:hover {
+        background-color: var(--primary-clr);
+        color: #FFFFFF;
+    }
+
+.form-link {
+    text-decoration: none;
+    color: var(--font-clr);
+}
+
+    .form-link:hover,
+    .highlight-link {
+        color: var(--highlight-clr);
+    }
+
+/** Register **/
+.register-form-content {
+    padding-bottom: 1rem;
+}
+
+/****/
+
+@media(max-width:992px) {
+    .row .side-carousel-container {
+        position: static;
+        height: 40vh;
+    }
+
+    .carousel-caption {
+        font-size: 5px;
+        padding: 8%;
+    }
+
+        .carousel-caption .title {
+            width: 100%;
+            font-size: 20px;
+        }
+
+        .carousel-caption .description {
+            font-size: 14px;
+        }
+
+    .form-content {
+        height: 100%;
+        min-height: 60vh;
+    }
+}
+
+@media(max-width:556px) {
+    .form-content {
+        padding: 1rem;
+        padding-top: 1rem;
+    }
+}

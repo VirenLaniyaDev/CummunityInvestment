@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Mission Applications";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles{
+    @*<link rel="stylesheet" href=@Url.Content("~/css/AdminActivity/MissionApplications.css") asp-append-version="true" />*@
+}
+
+<div class="mission-applications-container px-3">
+    <div class="title-underline-wrapper mb-4">
+        <h4 class="title pb-3">Mission Applications</h4>
+    </div>
+    <div class="row mb-4">
+        <div class="col-8 col-lg-6">
+            <input class="form-control input input-search" id="table-search" placeholder="Search for Mission Applications" />
+        </div>
+    </div>
+
+    <!-- Mission Applications table -->
+    <div class="w-100">
+        <div class="table-responsive admin-table-wrapper">
+            <table class="table align-middle admin-table w-100 border" id="mission-applications-table">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">Mission Title</th>
+                        <th scope="col">Mission Id</th>
+                        <th scope="col">User Id</th>
+                        <th scope="col">User Name</th>
+                        <th scope="col">Applied Date</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <partial name="_RemoveItemConfirmModal"></partial>
+</div>
+
+@section Scripts {
+    <script src="~/js/AdminActivity/MissionActivity/MissionApplications.js" asp-append-version="true"></script>
+}
+

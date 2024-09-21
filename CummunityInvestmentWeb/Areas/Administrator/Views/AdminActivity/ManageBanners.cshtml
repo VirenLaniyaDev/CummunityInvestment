@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewData["Title"] = "Manage Banners";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/css/AdminActivity/ManageBanners.css") asp-append-version="true" />
+}
+
+<div class="cms-container px-3">
+    <div class="title-underline-wrapper mb-4">
+        <h4 class="title pb-3">Banner Management</h4>
+    </div>
+    <div class="row mb-4">
+        <div class="col-8 col-lg-6">
+            <input class="form-control input input-search" id="table-search" placeholder="Search Banner" />
+        </div>
+        <div class="col-4 col-lg-6 text-end">
+            <button class="btn primary-btn" id="admin-add-banner-btn">
+                <i class="bi bi-plus-lg rg-icon"></i>
+                <span>Add</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Banner table -->
+    <div class="w-100">
+        <div class="table-responsive admin-table-wrapper">
+            <table class="table table-hover align-middle admin-table w-100 border" id="banner-table">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Sort Order</th>
+                        <th scope="col">Last Updated</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="banner-modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="bannerModal">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg modal-fullscreen-xxl-down" id="admin-banner-modal-dialog">
+        </div>
+    </div>
+
+    <partial name="_RemoveItemConfirmModal"></partial>
+</div>
+
+@section Scripts {
+    <script src="~/js/AdminActivity/ManageBanners.js" asp-append-version="true"></script>
+}
+

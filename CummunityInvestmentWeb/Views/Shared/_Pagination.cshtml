@@ -1,0 +1,88 @@
+﻿@using CommunityInvestment.Models;
+@model Pager
+@{
+    Pager _Pager = Model;
+}
+
+<head>
+    <style>
+        /* Pagination */
+        .pagination .page-item .page-link {
+            color: var(--font-clr);
+        }
+
+            .pagination .page-item .page-link:hover {
+                background-color: var(--hover-bg-clr);
+            }
+
+            .pagination .page-item .page-link:active {
+                box-shadow: none !important;
+            }
+
+        .active > .page-link {
+            border: none;
+            color: #FFFFFF !important;
+            background-color: var(--primary-clr) !important;
+        }
+    </style>
+</head>
+
+<form method="post" id="pagination-form">
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center column-gap-2">
+            @if (_Pager.CurrentPage >= 4)
+            {
+                <li class="page-item">
+                    <input class="d-none" type="radio" name="pg" id="pg-firstPg" value=1 />
+                    <label class="page-link rounded" for="pg-firstPg" aria-label="FirstPage">
+                        <i class="bi bi-chevron-double-left"></i>
+                    </label>
+                </li>
+            }
+            @if (_Pager.CurrentPage > 1)
+            {
+                <li class="page-item d-none d-sm-block">
+                    <input class="d-none" type="radio" name="pg" id="pg-prev" value=@(_Pager.CurrentPage - 1) />
+                    <label class="page-link rounded" for="pg-prev" aria-label="Previous">
+                        <i class="bi bi-chevron-left"></i>
+                    </label>
+                </li>
+            }
+            @for (var i = _Pager.StartPage; i <= _Pager.EndPage; i++)
+            {
+                // Determine if the current link should be active
+                string activeClass = (i == _Pager.CurrentPage) ? "active" : "";
+                // Display the page link with the appropriate class
+                <li class="page-item @activeClass">
+                    @if (activeClass == "active")
+                    {
+                        <input class="d-none" type="radio" id="pg-@i" name="pg" value=@i checked />
+                    }
+                    else
+                    {
+                        <input class="d-none" type="radio" id="pg-@i" name="pg" value=@i />
+                    }
+                    <label for="pg-@i" class="page-link rounded">@i</label>
+                </li>
+            }
+            @if (_Pager.CurrentPage < _Pager.TotalPages)
+            {
+                <li class="page-item d-none d-sm-block">
+                    <input class="d-none" type="radio" name="pg" id="pg-next" value=@(_Pager.CurrentPage + 1) />
+                    <label class="page-link rounded" for="pg-next" aria-label="Next">
+                        <i class="bi bi-chevron-right"></i>
+                    </label>
+                </li>
+            }
+            @if (_Pager.CurrentPage <= _Pager.TotalPages - 3)
+            {
+                <li class="page-item">
+                    <input class="d-none" type="radio" name="pg" id="pg-lastPg" value=@(_Pager.TotalPages) />
+                    <label class="page-link rounded" for="pg-lastPg" aria-label="LastPage">
+                        <i class="bi bi-chevron-double-right"></i>
+                    </label>
+                </li>
+            }
+        </ul>
+    </nav>
+</form>

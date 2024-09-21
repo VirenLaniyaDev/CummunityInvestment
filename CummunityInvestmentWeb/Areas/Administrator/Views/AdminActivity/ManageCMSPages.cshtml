@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewData["Title"] = "CMS Pages";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/css/AdminActivity/ManageCMSPages.css") asp-append-version="true" />
+}
+
+<div class="cms-container px-3">
+    <div class="title-underline-wrapper mb-4">
+        <h4 class="title pb-3">CMS Page</h4>
+    </div>
+    <div class="row mb-4">
+        <div class="col-8 col-lg-6">
+            <input class="form-control input input-search" id="table-search" placeholder="Search for CMS Page" />
+        </div>
+        <div class="col-4 col-lg-6 text-end">
+            <a class="btn primary-btn" id="admin-add-cmsPage-btn" asp-controller="AdminActivity" asp-action="AddCMSPage">
+                <i class="bi bi-plus-lg rg-icon"></i>
+                <span>Add</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- CMS Pages table -->
+    <div class="w-100">
+        <div class="table-responsive admin-table-wrapper">
+            <table class="table align-middle admin-table w-100 border" id="cms-pages-table">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <partial name="_RemoveItemConfirmModal"></partial>
+</div>
+
+@section Scripts {
+    <script src="~/js/AdminActivity/ManageCMSPages.js" asp-append-version="true"></script>
+}
+

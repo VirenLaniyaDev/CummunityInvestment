@@ -1,0 +1,60 @@
+﻿@model UserRegisterVM
+@{
+    ViewData["Title"] = "Signup";
+    Layout = "~/Views/Shared/_Authentication.cshtml";
+}
+@functions {
+    public string IsValidField(string Key, ModelStateDictionary modelState)
+    {
+        return modelState.TryGetValue(Key, out var entry) && entry.Errors.Count > 0 ? "is-invalid" : "";
+    }
+}
+
+<form class="form-container" method="post">
+    <div class="form-wrapper mb-2">
+        <div class="input-container mb-4">
+            <label asp-for="FirstName" class="form-label"></label>
+            <input asp-for="FirstName" class="form-control input @IsValidField("FirstName", ViewData.ModelState)" placeholder="Enter your First name">
+            <span asp-validation-for="FirstName" class="invalid-feedback"></span>
+        </div>
+        <div class="input-container mb-4">
+            <label asp-for="LastName" class="form-label"></label>
+            <input asp-for="LastName" class="form-control input @IsValidField("LastName", ViewData.ModelState)" placeholder="Enter your Last name">
+            <span asp-validation-for="LastName" class="invalid-feedback"></span>
+        </div>
+        <div class="input-container mb-4">
+            <label asp-for="PhoneNumber" class="form-label"></label>
+            <input asp-for="PhoneNumber" class="form-control input @IsValidField("PhoneNumber", ViewData.ModelState)" placeholder="Enter your Phone number">
+            <span asp-validation-for="PhoneNumber" class="invalid-feedback"></span>
+        </div>
+        <div class="input-container mb-4">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" class="form-control input @IsValidField("Email", ViewData.ModelState)" id="email" placeholder="Enter your Email address">
+            <span asp-validation-for="Email" class="invalid-feedback" id="email-feedback"></span>
+        </div>
+        <div class="input-container mb-4">
+            <label asp-for="Password" class="form-label"></label>
+            <div class="input-group">
+                <input asp-for="Password" type="password" id="password-field" class="form-control input @IsValidField("Password", ViewData.ModelState)" aria-describedby="password-visible-btn" placeholder="Enter Password">
+                <button class="btn rounded-end-2 btn-outline-light border-start-0" type="button" id="password-visible-btn">
+                    <i id="password-visible-icon" class="bi bi-eye md-icon"></i>
+                    <i id="password-invisible-icon" class="bi bi-eye-slash md-icon d-none"></i>
+                </button>
+                <span asp-validation-for="Password" class="invalid-feedback"></span>
+            </div>
+        </div>
+        <div class="input-container mb-4">
+            <label asp-for="ConfirmPassword" class="form-label"></label>
+            <input asp-for="ConfirmPassword" type="password" class="form-control input @IsValidField("ConfirmPassword", ViewData.ModelState)" placeholder="Re-enter your Password">
+            <span asp-validation-for="ConfirmPassword" class="invalid-feedback"></span>
+        </div>
+        <button type="submit" class="auth-form-btn mb-3">Register</button>
+        <div class="ref-links-container d-flex flex-column align-items-center">
+            <div class="link-wrapper d-inline">
+                <span>Already registered?</span>
+                <a class="form-link highlight-link" asp-controller="Authentication" asp-action="Login">Login now</a>
+            </div>
+        </div>
+    </div>
+</form>
+

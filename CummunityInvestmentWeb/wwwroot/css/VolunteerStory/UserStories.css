@@ -1,0 +1,12 @@
+﻿.form-control.input-search {
+    /*height: 100%;*/
+    color: #000;
+    background: url("/assets/search.png") no-repeat;
+    background-size: 16px 16px;
+    background-position: 12px center;
+    padding-left: 40px;
+}
+
+#user-stories-table{
+    min-width: 572px;
+}

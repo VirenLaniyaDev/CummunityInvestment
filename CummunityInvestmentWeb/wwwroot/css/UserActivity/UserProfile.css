@@ -1,0 +1,99 @@
+﻿/********* User Profile Side Container *********/
+.user-profile .up-side-container {
+    border: 1px solid var(--border-clr);
+}
+
+.up-side-container .up-avatar-name-wrapper {
+}
+
+.up-avatar-name-wrapper .up-user-avatar {
+}
+
+    .up-avatar-name-wrapper .up-user-avatar img {
+        width: 180px;
+        aspect-ratio: 1/1;
+        border-radius: 50%;
+        object-fit: cover;
+        cursor: pointer;
+    }
+
+.up-user-avatar .up-user-avatar-hover{
+    visibility: hidden;
+    background-color: transparent;
+}
+    .up-user-avatar .up-user-avatar-hover *{
+        color: #FFFFFF;
+    }
+
+    .up-user-avatar .up-user-avatar-hover .user-avatar-hover-text{
+        /*font-size: 16px;*/
+    }
+
+.up-user-avatar:hover .up-user-avatar-hover{
+    transition: 0.4s;
+    background-color: rgba(0, 0, 0, 0.4);
+    visibility: visible;
+    cursor: pointer;
+}
+
+    .up-avatar-name-wrapper .up-user-name {
+        font-size: 1.4rem;
+        font-weight: 500;
+    }
+
+/***** User profile My Skills Container *****/
+#up-user-skills-list .list-group-item {
+    border: none;
+}
+
+/** Add skills Modal **/
+#up-add-skills-modalBody .skill-selector-wrapper {
+    height: 65vh;
+    max-height: 65vh;
+    /*overflow-y: auto;*/
+}
+
+.skill-selector-wrapper .skill-selector-item {
+    height: 100%;
+    overflow-y: auto;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+    .skill-selector-wrapper .skill-selector-item::-webkit-scrollbar {
+        display: none;
+    }
+
+
+#up-add-skills-modal .up-skill-list .list-group-item {
+    /*margin-bottom: 2px;*/
+}
+
+    #up-add-skills-modal .up-skill-list .list-group-item:hover {
+        background-color: var(--hover-bg-clr);
+    }
+
+    #up-add-skills-modal .up-skill-list .list-group-item.active {
+        background-color: var(--border-clr);
+        border-color: transparent;
+    }
+
+
+/*-*-*-*-* Responsive media query *-*-*-*-*/
+@media(max-width: 992px) {
+    .up-avatar-name-wrapper .up-user-name {
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+}
+
+@media(max-width: 768px) {
+    #up-selected-skills,
+    #up-skill-select {
+        height: 45%;
+    }
+
+    #up-modal-skill-actions{
+        height: 10%;
+    }
+}

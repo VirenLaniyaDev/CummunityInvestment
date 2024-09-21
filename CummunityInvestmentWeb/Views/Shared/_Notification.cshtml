@@ -1,0 +1,40 @@
+﻿<script>
+    var options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "7000",
+        "extendedTimeOut": "4000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut",
+        "allowHtml": true // enable HTML in the message
+    }
+</script>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    @*<div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill"></i>
+        Link for Reset Password has been sent to <a href="https://mail.google.com/" class="alert-link" target="_blank">@TempData["ResetLinkSent_Success"]</a>!
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>*@
+    @*<script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>*@
+    <script type="text/javascript">
+        toastr.success("@TempData["SuccessMessage"]", '@(TempData["SuccessMessageTitle"] ?? "Success")', options);
+    </script>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <script type="text/javascript">
+        toastr.error("@TempData["ErrorMessage"]", '@(TempData["ErrorMessageTitle"] ?? "Error")', options);
+    </script>
+}

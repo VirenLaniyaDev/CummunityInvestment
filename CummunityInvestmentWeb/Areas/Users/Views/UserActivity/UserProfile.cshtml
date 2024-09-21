@@ -1,0 +1,295 @@
+﻿@model UserProfileVM
+
+@{
+    ViewData["Title"] = "Your Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    UserProfileVM UserProfile = Model;
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/css/UserActivity/UserProfile.css") asp-append-version="true" />
+}
+
+@functions {
+    public string IsValidField(string Key, ModelStateDictionary modelState)
+    {
+        return modelState.TryGetValue(Key, out var entry) && entry.Errors.Count > 0 ? "is-invalid" : "";
+    }
+}
+
+<div class="user-profile">
+    <div class="modal fade" id="up-change-password-modal" tabindex="-1" aria-labelledby="changePasswordModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="change-password-form">
+                    <div class="modal-header border-bottom-0">
+                        <h1 class="modal-title fs-5" id="">Change Password</h1>
+                        <button type="button" class="btn-close cancel-change-pass-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="up-change-password-modalBody">
+                        <div class="input-container mb-4">
+                            @*<label asp-for="@UserProfile.ChangePassword.OldPassword" class="form-label"></label>*@
+                            <input asp-for="@UserProfile.ChangePassword.OldPassword" id="OldPassword" class="form-control input @IsValidField("ChangePassword.OldPassword", ViewData.ModelState)" placeholder="Enter Current Password" />
+                            <span asp-validation-for="@UserProfile.ChangePassword.OldPassword" class="invalid-feedback"></span>
+                        </div>
+                        @*<div class="input-container mb-4">
+                            <label asp-for="@UserProfile.ChangePassword.NewPassword" class="form-label"></label>
+                            <input asp-for="@UserProfile.ChangePassword.NewPassword" id="NewPassword" class="form-control input @IsValidField("ChangePassword.NewPassword", ViewData.ModelState)" placeholder="Enter New Password" />
+                            <span asp-validation-for="@UserProfile.ChangePassword.NewPassword" class="invalid-feedback"></span>
+                        </div>*@
+                        <div class="input-container mb-4">
+                            <div class="input-group">
+                                <input asp-for="@UserProfile.ChangePassword.NewPassword" id="NewPassword" class="form-control input @IsValidField("ChangePassword.NewPassword", ViewData.ModelState)" placeholder="Enter New Password" />
+                                <button class="btn rounded-end-2 btn-outline-light border-start-0" type="button" id="password-visible-btn">
+                                    <i id="password-visible-icon" class="bi bi-eye rg-icon"></i>
+                                    <i id="password-invisible-icon" class="bi bi-eye-slash rg-icon d-none"></i>
+                                </button>
+                                <span asp-validation-for="@UserProfile.ChangePassword.NewPassword" class="invalid-feedback"></span>
+                            </div>
+                        </div>
+                        <div class="input-container mb-4">
+                            @*<label asp-for="@UserProfile.ChangePassword.ConfirmPassword" class="form-label"></label>*@
+                            <input asp-for="@UserProfile.ChangePassword.ConfirmPassword" id="ConfirmPassword" class="form-control input @IsValidField("ChangePassword.ConfirmPassword", ViewData.ModelState)" placeholder="Confirm New Password" />
+                            <span asp-validation-for="@UserProfile.ChangePassword.ConfirmPassword" class="invalid-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn secondary-btn cancel-change-pass-btn" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn primary-btn" id="up-change-password-btn">
+                            <span class="btn-loader spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                            <span class="btn-content">Change Password</span>
+                            <span class="btn-loader d-none">Please wait...</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <form method="post" enctype="multipart/form-data">
+        <div class="row g-4">
+            <div class="col-12 col-md-4 col-lg-3 mb-3">
+                <div class="up-side-container row row-cols-2 row-cols-md-1 g-3 m-0 align-items-center py-md-5 px-md-3 py-3 px-2">
+                    <input asp-for="NewUserAvatar" hidden />
+                    <div class="col-5 col-md-12 up-avatar-name-wrapper content-center flex-column gap-2">
+                        <div class="up-user-avatar position-relative" id="up-user-avatar" data-bs-toggle="" data-bs-placement="bottom" data-bs-title="Change Profile Picture">
+                            <label for="NewUserAvatar">
+                                @if (UserProfile.Avatar != null)
+                                {
+                                    <input asp-for="Avatar" value="@UserProfile.Avatar" hidden />
+                                    <img src="@UserProfile.Avatar" class="img-fluid">
+                                }
+                                else
+                                {
+                                    <img src="~/assets/user-profile-avatar.svg" class="img-fluid">
+                                }
+                                <div class="up-user-avatar-hover content-center flex-column position-absolute top-50 start-50 translate-middle rounded-circle w-100 h-100">
+                                    <i class="bi bi-camera lg-icon"></i>
+                                    <span class="user-avatar-hover-text px-3 text-center">Change Profile Picture</span>
+                                </div>
+                            </label>
+                        </div>
+                        <span class="up-user-name text-center" id="up-user-name">@UserProfile.FirstName @UserProfile.LastName</span>
+                    </div>
+                    <div class="col-7 col-md-12 up-side-actions-wrapper">
+                        <button type="button" class="btn secondary-btn w-100" data-bs-toggle="modal" data-bs-target="#up-change-password-modal">Change Password</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-8 col-lg-9">
+                <div class="title-underline-wrapper mb-3">
+                    <h4 class="title pb-3">Basic Information</h4>
+                </div>
+                <div class="up-basic-information-container row g-4 mb-5">
+                    <div class="input-container col-12 col-lg-6">
+                        <label asp-for="FirstName" class="form-label"></label>
+                        <input asp-for="FirstName" class="form-control input @IsValidField("FirstName", ViewData.ModelState)" placeholder="Enter your name">
+                        <span asp-validation-for="FirstName" class="invalid-feedback"></span>
+                    </div>
+                    <div class="input-container col-12 col-lg-6">
+                        <label asp-for="LastName" class="form-label"></label>
+                        <input asp-for="LastName" class="form-control input @IsValidField("LastName", ViewData.ModelState)" placeholder="Enter your surname">
+                        <span asp-validation-for="LastName" class="invalid-feedback"></span>
+                    </div>
+                    <div class="input-container col-12 col-lg-6">
+                        <label asp-for="EmployeeId" class="form-label"></label>
+                        <input asp-for="EmployeeId" class="form-control input @IsValidField("EmployeeId", ViewData.ModelState)" placeholder="Enter your Employeed ID">
+                        <span asp-validation-for="EmployeeId" class="invalid-feedback"></span>
+                    </div>
+                    <div class="input-container col-12 col-lg-6">
+                        <label asp-for="Department" class="form-label"></label>
+                        <input asp-for="Department" class="form-control input @IsValidField("Department", ViewData.ModelState)" placeholder="Enter your Department">
+                        <span asp-validation-for="Department" class="invalid-feedback"></span>
+                    </div>
+                    <div class="input-container col-12">
+                        <label asp-for="Title" class="form-label"></label>
+                        <input asp-for="Title" class="form-control input @IsValidField("Title", ViewData.ModelState)" placeholder="Enter your title">
+                        <span asp-validation-for="Title" class="invalid-feedback"></span>
+                    </div>
+                    <div class="input-container col-12">
+                        <label asp-for="ProfileText" class="form-label"></label>
+                        <textarea asp-for="ProfileText" class="form-control input @IsValidField("ProfileText", ViewData.ModelState)" placeholder="Enter your profile text"></textarea>
+                        <span asp-validation-for="ProfileText" class="invalid-feedback"></span>
+                    </div>
+                    <div class="input-container col-12">
+                        <label asp-for="WhyIVolunteer" class="form-label"></label>
+                        <textarea asp-for="WhyIVolunteer" class="form-control input @IsValidField("WhyIVolunteer", ViewData.ModelState)" placeholder="Enter why you volunteer?"></textarea>
+                        <span asp-validation-for="WhyIVolunteer" class="invalid-feedback"></span>
+                    </div>
+                </div>
+                <div class="title-underline-wrapper mb-3">
+                    <h4 class="title pb-3">Address Information</h4>
+                </div>
+                <div class="up-address-information-container row g-4 mb-5">
+                    <div class="input-container col-12 col-lg-6">
+                        <label asp-for="CountryId" class="form-label"></label>
+                        <select asp-for="CountryId" class="form-select input @IsValidField("CountryId", ViewData.ModelState)">
+                            <option value="">-- Select your Country --</option>
+                            @foreach (var country in ViewBag.Countries)
+                            {
+                                <option value=@country.CountryId>@country.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="CountryId" class="invalid-feedback"></span>
+                    </div>
+                    <div class="input-container col-12 col-lg-6">
+                        <label asp-for="CityId" class="form-label"></label>
+                        <select asp-for="CityId" class="form-select input @IsValidField("CityId", ViewData.ModelState)">
+                            @foreach (var city in ViewBag.CountryCities)
+                            {
+                                <option value=@city.CityId>@city.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="CityId" class="invalid-feedback"></span>
+                    </div>
+                </div>
+                <div class="title-underline-wrapper mb-3">
+                    <h4 class="title pb-3">Professional Information</h4>
+                </div>
+                <div class="up-professional-information-container row g-4 mb-5">
+                    <div class="input-container col-12 col-lg-6">
+                        <label asp-for="Availability" class="form-label"></label>
+                        <select asp-for="Availability" class="form-select input @IsValidField("Availability", ViewData.ModelState)">
+                            <option value="">Select your availability</option>
+                            @*@foreach (var volunteeredMA in _UserVolunteeredMA)
+                            {
+                            <option value=@volunteeredMA.Mission.MissionId>@volunteeredMA.Mission.Title</option>
+                            }*@
+                            <option value="Daily">Daily</option>
+                            <option value="Weekly">Weekly</option>
+                            <option value="Weekend">Weekend</option>
+                            <option value="Monthly">Monthly</option>
+                        </select>
+                        <span asp-validation-for="Availability" class="invalid-feedback"></span>
+                    </div>
+                    <div class="input-container col-12 col-lg-6">
+                        <label asp-for="LinkedInUrl" class="form-label"></label>
+                        <input asp-for="LinkedInUrl" class="form-control input @IsValidField("LinkedInUrl", ViewData.ModelState)" placeholder="Enter linkedin URL">
+                        <span asp-validation-for="LinkedInUrl" class="invalid-feedback"></span>
+                    </div>
+                </div>
+                <div class="title-underline-wrapper mb-3">
+                    <h4 class="title pb-3">My Skills</h4>
+                </div>
+                <div class="up-my-skills-container row g-4 mb-2">
+                    <div class="up-user-skills-wrapper col-12">
+                        <ul class="list-group border" id="up-user-skills-list">
+                            @if (UserProfile.SkillIds.Any())
+                            {
+                                @foreach (var skill in ViewBag.Skills)
+                                {
+                                    @if (UserProfile.SkillIds.Any(sid => sid == skill.SkillId))
+                                    {
+                                        <li class="list-group-item py-1">
+                                            <input type="checkbox" name="SkillIds" value=@skill.SkillId checked hidden readonly>
+                                            <label>@skill.SkillName</label>
+                                        </li>
+                                    }
+                                }
+                            }
+                        </ul>
+                    </div>
+                    <div class="up-add-skills-btn-wrapper col-12">
+                        <button type="button" class="btn secondary-btn px-4" data-bs-toggle="modal" data-bs-target="#up-add-skills-modal">Add Skills</button>
+                    </div>
+                    <div class="modal fade" id="up-add-skills-modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addSkillsModal">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header border-bottom-0">
+                                    <h1 class="modal-title fs-5" id="">Add your Skills</h1>
+                                    <button type="button" class="btn-close close-select-skills-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body" id="up-add-skills-modalBody">
+                                    <div class="container-fluid">
+                                        <div class="row skill-selector-wrapper">
+                                            <div class="col border py-2 px-0 skill-selector-item" id="up-skill-select">
+                                                <ul class="list-group list-group-flush up-skill-list" id="up-skills-select-list">
+                                                    @foreach (var skill in ViewBag.Skills)
+                                                    {
+                                                        <li class="list-group-item py-1 border-bottom-0 mb-1">
+                                                            @if (UserProfile.SkillIds.Any(sid => sid == skill.SkillId))
+                                                            {
+                                                                <input type="checkbox" name="Skills" class="btn-check" id="up-skills-@skill.SkillId" value=@skill.SkillId autocomplete="off" checked />
+                                                            }
+                                                            else
+                                                            {
+                                                                <input type="checkbox" name="Skills" class="btn-check" id="up-skills-@skill.SkillId" value=@skill.SkillId autocomplete="off" />
+                                                            }
+                                                            <label class="stretched-link" for="up-skills-@skill.SkillId">@skill.SkillName</label>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                            <div class="col-12 col-md-1 content-center flex-row flex-md-column row-gap-1 skill-selector-item" id="up-modal-skill-actions">
+                                                <button type="button" id="add-selected-skills-btn" class="btn">
+                                                    <i class="bi bi-chevron-right d-md-block d-none"></i>
+                                                    <i class="bi bi-chevron-down d-block d-md-none"></i>
+                                                </button>
+                                                <button type="button" id="remove-selected-skills-btn" class="btn">
+                                                    <i class="bi bi-chevron-left d-md-block d-none"></i>
+                                                    <i class="bi bi-chevron-up d-block d-md-none"></i>
+                                                </button>
+                                            </div>
+                                            <div class="col border py-2 px-0 skill-selector-item" id="up-selected-skills">
+                                                <ul class="list-group list-group-flush up-skill-list" id="up-selected-skills-list">
+                                                    @if (UserProfile.SkillIds.Any())
+                                                    {
+                                                        @foreach (var skill in ViewBag.Skills)
+                                                        {
+                                                            @if (UserProfile.SkillIds.Any(sid => sid == skill.SkillId))
+                                                            {
+                                                                <li class="list-group-item py-1 border-bottom-0 mb-1">
+                                                                    @if (UserProfile.SkillIds.Any(sid => sid == skill.SkillId))
+                                                                    {
+                                                                        <input type="checkbox" name="selectedSkills" class="btn-check" id="up-selectedSkills-@skill.SkillId" value=@skill.SkillId autocomplete="off" />
+                                                                    }
+                                                                    <label class="stretched-link" for="up-selectedSkills-@skill.SkillId">@skill.SkillName</label>
+                                                                </li>
+                                                            }
+                                                        }
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer justify-content-start border-0">
+                                    <button type="button" class="btn secondary-btn close-select-skills-btn" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn primary-btn" id="up-save-skills-btn">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="up-form-action-wrapper d-flex justify-content-end">
+                    <button type="submit" class="btn primary-btn px-4">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.minForCI.js"></script>
+    <script src="~/js/UserActivity/UserProfile.js" asp-append-version="true"></script>
+        }

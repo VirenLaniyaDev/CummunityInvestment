@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Manage Users";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/css/AdminActivity/ManageUsers.css") asp-append-version="true" />
+}
+
+<div class="users-container px-3">
+    <div class="title-underline-wrapper mb-4">
+        <h4 class="title pb-3">User</h4>
+    </div>
+    <div class="row mb-4">
+        <div class="col-8 col-lg-6">
+            <input class="form-control input input-search" id="table-search" placeholder="Search User" />
+        </div>
+        <div class="col-4 col-lg-6 text-end">   
+            <button type="button" class="btn primary-btn" id="admin-add-user-btn">
+                <i class="bi bi-plus-lg rg-icon"></i>
+                <span>Add</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- User table -->
+    <div class="w-100">
+        <div class="table-responsive admin-table-wrapper w-100">
+            <table class="table align-middle admin-table w-100 border" id="users-table">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">EmployeeId</th>
+                        <th scope="col">Department</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="admin-addOrUpdate-user-modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addOrUpdateUser">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl modal-fullscreen-xxl-down" id="admin-addOrUpdate-user-modal-dialog">
+            
+        </div>
+    </div>
+
+    <partial name="_RemoveItemConfirmModal"></partial>
+</div>
+
+@section Scripts {
+    <script src="~/js/AdminActivity/ManageUsers.js" asp-append-version="true"></script>
+}
+

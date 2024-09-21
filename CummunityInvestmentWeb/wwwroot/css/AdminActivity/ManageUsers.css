@@ -1,0 +1,43 @@
+﻿/********* User Profile Side Container *********/
+.user-profile .up-side-container {
+    border: 1px solid var(--border-clr);
+}
+
+.up-side-container .up-avatar-name-wrapper {
+}
+
+.up-avatar-name-wrapper .up-user-avatar {
+}
+
+    .up-avatar-name-wrapper .up-user-avatar img {
+        width: 180px;
+        aspect-ratio: 1/1;
+        border-radius: 50%;
+        object-fit: cover;
+        cursor: pointer;
+    }
+
+.up-user-avatar .up-user-avatar-hover {
+    visibility: hidden;
+    background-color: transparent;
+}
+
+    .up-user-avatar .up-user-avatar-hover * {
+        color: #FFFFFF;
+    }
+
+    .up-user-avatar .up-user-avatar-hover .user-avatar-hover-text {
+        /*font-size: 16px;*/
+    }
+
+.up-user-avatar:hover .up-user-avatar-hover {
+    transition: 0.4s;
+    background-color: rgba(0, 0, 0, 0.4);
+    visibility: visible;
+    cursor: pointer;
+}
+
+.up-side-container{
+    position: sticky;
+    top: 0;
+}

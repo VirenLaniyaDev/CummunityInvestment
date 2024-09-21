@@ -1,0 +1,153 @@
+﻿@model Story
+
+@{
+    ViewData["Title"] = Model.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles{
+    <link rel="stylesheet" href="@Url.Content("~/css/VolunteerStory/StoryDetail.css")" asp-append-version="true" />
+}
+
+<div class="volunteer-story-container" data-story-id=@Model.StoryId>
+    <div class="row row-cols-1 row-cols-md-2 g-5 mb-5">
+        <div class="col-12 story-images-container">
+            <div class="story-images-wrapper">
+                @{
+                    List<StoryMedium> _StoryMedia = Model.StoryMedia.ToList();
+                    int mediaCount = _StoryMedia.Count();
+                    List<StoryMedium> _images = _StoryMedia.Where(sm => sm.StoryType.Equals("image")).ToList();
+                    List<StoryMedium> _videos = _StoryMedia.Where(sm => sm.StoryType.Equals("video")).ToList();
+                    var totalSlides = (int)mediaCount / 4;
+                    int ith_mediaImg = 0;
+                }
+                <div class="expanded-img-view mb-1">
+                    @if (_images.Count > 0)
+                    {
+                        <img src="@_images[ith_mediaImg].StoryPath" class="expanded-img" alt="Image Not found!" />
+                        <iframe id="expanded-video" class="d-none" src=""></iframe>
+                    }
+                    else if (_videos.Count > 0)
+                    {
+                        <img src="" class="expanded-img d-none" alt="Image Not found!" />
+                        <iframe id="expanded-video" src="@_videos[ith_mediaImg].StoryPath"></iframe>
+                    }
+                    else
+                    {
+                        <img src="~/assets/no-image-available.png" class="expanded-img" alt="Image Not found!" />
+                    }
+                </div>
+                @if (mediaCount > 0)
+                {
+                    <div class="img-slider-container">
+                        <div id="story-imgs-slider" class="carousel slide" data-bs-ride="false">
+                            <div class="carousel-inner">
+                                @for (int j = 0; j <= totalSlides; j++)
+                                {
+                                    int _mediaCount = 0;
+                                    <div class="carousel-item @(j==0?"active":"")">
+                                        <div class="row slide-row row-cols-4 g-1">
+                                            @while (ith_mediaImg < mediaCount && _mediaCount < 4)
+                                            {
+                                                <div class="slider-img-wrapper">
+                                                    @if (@_StoryMedia[ith_mediaImg].StoryType.Equals("image"))
+                                                    {
+                                                        <img src="@_StoryMedia[ith_mediaImg].StoryPath" class="slide-img d-block w-100" alt="...">
+                                                    }
+                                                    else
+                                                    {
+                                                        <div data-src="@_StoryMedia[ith_mediaImg].StoryPath" class="slide-video d-block w-100 h-100 position-relative">
+                                                            <i class="bi bi-play-circle icon-primary play-video-btn"></i>
+                                                            <i class="bi bi-pause-circle icon-primary pause-video-btn d-none"></i>
+                                                        </div>
+                                                    }
+                                                </div>
+                                                ith_mediaImg++;
+                                                _mediaCount++;
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#story-imgs-slider" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#story-imgs-slider" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-12 info-actions-container pt-5">
+            <div class="user-pgView-wrapper d-flex align-items-end justify-content-between mb-4">
+                <div class="u-avatar-name-wrapper d-flex flex-column align-items-center justify-content-end">
+                    <img src="@Model.User.Avatar" class="rounded-circle user-avatar" />
+                    <span class="mt-2">@Model.User.FirstName @Model.User.LastName</span>
+                </div>
+                <span class="btn rounded-pill border">
+                    <i class="bi bi-eye"></i>
+                    @ViewData["ViewCount"] Views
+                </span>
+            </div>
+            <p class="why-user-volunteer mb-4">
+                @Html.Raw(Model.User.WhyIVolunteer?.Replace("\n", "<br />"));
+            </p>
+            <div class="favorite-invite-wrapper content-center flex-column flex-lg-row column-gap-3 row-gap-3 mb-4">
+                @if (Model.Status.Equals("published"))
+                {
+                    <button class="btn secondary-btn w-100 content-center recommend-to-coWorkers-btn" data-invite-story-id=@Model.StoryId>
+                        <i class="bi bi-person-plus md-icon me-2"></i>
+                        Recommend to Co-workers
+                    </button>
+                }
+                else
+                {
+                    <button class="btn secondary-btn w-100 content-center recommend-to-coWorkers-btn" disabled>
+                        <i class="bi bi-person-plus md-icon me-2"></i>
+                        Recommend to Co-workers
+                    </button>
+                }
+
+                <a class="btn primary-btn w-100 content-center open-mission-btn" asp-controller="Home" asp-action="VolunteeringMission" asp-route-id=@Model.MissionId>
+                    <span id="favorite-btn-text" class="me-2">Open Mission</span>
+                    <i class="bi bi-arrow-right md-icon"></i>
+                </a>
+                @*<partial name="~/Areas/Users/Views/Shared/_RecommendToCoWorkers.cshtml" model="_Mission.CoWorkers"></partial>*@
+            </div>
+        </div>
+    </div>
+    <div class="story-detail-container">
+        <div class="title-underline-wrapper mb-3">
+            <h3 class="h3 title pb-3">@Model.Title</h3>
+        </div>
+        <div class="story-description">
+            @Html.Raw(Model.Description)
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="recommend-to-coWorkers-modal" tabindex="-1" aria-labelledby="recodmmendToCoWorker" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header row">
+                <div class="col-12 mb-3 d-flex justify-content-between align-items-center">
+                    <h1 class="modal-title fs-5" id="recommend-to-coWorkers">Recommend to Co-Workers</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="input-container col-12">
+                    <input class="form-control input" id="search-coWorker" placeholder="Search for Co-Worker">
+                </div>
+            </div>
+            <div class="modal-body" id="coWorkers-modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/VolunteerStory/StoryDetail.js" asp-append-version="true"></script>
+}

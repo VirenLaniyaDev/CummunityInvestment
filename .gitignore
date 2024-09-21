@@ -1,0 +1,8 @@
+bin/
+obj/
+.vs/
+CummunityInvestmentWeb/appsettings.json
+CummunityInvestmentWeb/appsettings.Development.json
+
+CummunityInvestmentWeb/wwwroot/data/*
+DatabaseBackup

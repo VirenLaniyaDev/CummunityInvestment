@@ -1,0 +1,153 @@
+﻿@model VolunteerStoryListingVM
+@{
+    List<Story> _Stories = Model.Stories;
+    Pager _Pager = Model.Pager;
+}
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-4">
+    @foreach (Story story in _Stories)
+    {
+        <div class="col story-card">
+            <div class="card">
+                <div class="row h-100">
+                    <div class="story-img-content col-12">
+                        <div class="story-img-wrapper">
+                            @if(story.StoryMedia.Count() > 0)
+                            {
+                                <img src="@story.StoryMedia.FirstOrDefault().StoryPath" class="card-img-top">
+                            } else
+                            {
+                                <img src="~/assets/no-image-available.png" class="card-img-top">
+                            }
+                            <div class="card-img-content card-img-overlay">
+                                <a class="btn rounded-pill content-btn content-center column-gap-2" asp-controller="VolunteerStory" asp-action="Story" asp-route-id=@story.StoryId>
+                                    <span class="ms-1">View Details</span>
+                                    <i class="bi bi-arrow-right rg-icon"></i>
+                                </a>
+                            </div>
+                            <span class="badge rounded-pill card-theme">@story.Mission.Theme.Title</span>
+                        </div>
+                    </div>
+                    <div class="story-content col-12">
+                        <div class="card-body">
+                            <div class="title-text-wrapper">
+                                <h5 class="card-title">@story.Title</h5>
+                                <p class="card-text">@story.Description</p>
+                            </div>
+                            <div class="story-by">
+                                @if (story.User.Avatar != null)
+                                {
+                                    <img src="@story.User.Avatar" class="writer-img me-2">
+                                }
+                                else
+                                {
+                                    <img src="~/assets/user-profile-avatar.svg" class="writer-img me-2">
+                                }
+                                <span class="writer-name">@story.User.FirstName @story.User.LastName</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class="story-footer">
+    <form method="post" id="pagination-form">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center column-gap-2">
+                @if (_Pager.CurrentPage >= 4)
+                {
+                    <li class="page-item">
+                        <input class="d-none" type="radio" name="pg" id="pg-firstPg" value=1 />
+                        <label class="page-link rounded" for="pg-firstPg" aria-label="FirstPage">
+                            <i class="bi bi-chevron-double-left"></i>
+                        </label>
+                    </li>
+                }
+                @if (_Pager.CurrentPage > 1)
+                {
+                    <li class="page-item d-none d-sm-block">
+                        <input class="d-none" type="radio" name="pg" id="pg-prev" value=@(_Pager.CurrentPage - 1) />
+                        <label class="page-link rounded" for="pg-prev" aria-label="Previous">
+                            <i class="bi bi-chevron-left"></i>
+                        </label>
+                    </li>
+                }
+                @for (var i = _Pager.StartPage; i <= _Pager.EndPage; i++)
+                {
+                    // Determine if the current link should be active
+                    string activeClass = (i == _Pager.CurrentPage) ? "active" : "";
+                    // Display the page link with the appropriate class
+                    <li class="page-item @activeClass">
+                        @if (activeClass == "active")
+                        {
+                            <input class="d-none" type="radio" id="pg-@i" name="pg" value=@i checked />
+                        }
+                        else
+                        {
+                            <input class="d-none" type="radio" id="pg-@i" name="pg" value=@i />
+                        }
+                        <label for="pg-@i" class="page-link rounded">@i</label>
+                    </li>
+                }
+                @if (_Pager.CurrentPage < _Pager.TotalPages)
+                {
+                    <li class="page-item d-none d-sm-block">
+                        <input class="d-none" type="radio" name="pg" id="pg-next" value=@(_Pager.CurrentPage + 1) />
+                        <label class="page-link rounded" for="pg-next" aria-label="Next">
+                            <i class="bi bi-chevron-right"></i>
+                        </label>
+                    </li>
+                }
+                @if (_Pager.CurrentPage <= _Pager.TotalPages - 3)
+                {
+                    <li class="page-item">
+                        <input class="d-none" type="radio" name="pg" id="pg-lastPg" value=@(_Pager.TotalPages) />
+                        <label class="page-link rounded" for="pg-lastPg" aria-label="LastPage">
+                            <i class="bi bi-chevron-double-right"></i>
+                        </label>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </form>
+</div>
+
+<script type="text/javascript">
+        
+    $(".story-footer #pagination-form input").change((e)=> GetStories(e));
+
+    function GetStories(e){
+        e.preventDefault();
+        $("#loader").removeClass('d-none');
+        let paginationFormData = $('.story-footer #pagination-form').serialize();
+        $.ajax({
+            method: 'GET',
+            url: '/Users/VolunteerStory/GetStories',
+            datatype: 'html',
+            data: paginationFormData,
+            success: function(response){
+                setTimeout(function(){
+                $("#story-listing-container").html(response);
+                    $("#loader").addClass('d-none');
+                }, 500);
+                console.log(response);
+            },
+            error: function(xhr, status, error){
+                console.log("Ajax error: "+error);
+            }
+        })
+    }
+
+    // Reducing content
+    function reduceContent(elementsArr, allowedChar) {
+        elementsArr.forEach(element => {
+            const content = element.textContent;
+            if (content.length > allowedChar) {
+                element.textContent = content.slice(0, allowedChar) + "...";
+            }
+        })
+    }
+    reduceContent(document.querySelectorAll('.card-text'), 100);
+</script>

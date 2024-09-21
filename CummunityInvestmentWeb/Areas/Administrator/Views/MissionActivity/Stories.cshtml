@@ -1,0 +1,58 @@
+﻿
+@{
+    ViewData["Title"] = "Stories";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles{
+    <link rel="stylesheet" href="@Url.Content("~/css/VolunteerStory/StoryDetail.css")" asp-append-version="true" />
+    <link rel="stylesheet" href=@Url.Content("~/css/AdminActivity/MissionActivity/Stories.css") asp-append-version="true" />
+}
+
+<div class="stories-container px-3">
+    <div class="title-underline-wrapper mb-4">
+        <h4 class="title pb-3">Story</h4>
+    </div>
+    <div class="row mb-4">
+        <div class="col-8 col-lg-6">
+            <input class="form-control input input-search" id="table-search" placeholder="Search by Story or Mission" />
+        </div>
+    </div>
+
+    <!-- Story table -->
+    <div class="w-100">
+        <div class="admin-table-wrapper">
+            <table class="table align-middle admin-table w-100 border" id="stories-table">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">Story Title</th>
+                        <th scope="col">Full Name</th>
+                        <th scope="col">Mission Title</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="admin-story-detail-modal" tabindex="-1" aria-labelledby="storyDetail">
+        <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen-xxl-down" id="admin-story-detail-modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h1 class="modal-title fs-5" id="">Story Details</h1>
+                    <button type="button" class="btn-close cancel-action-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="admin-story-detail-modalBody">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <partial name="_RemoveItemConfirmModal"></partial>
+</div>
+
+@section Scripts {
+    <script src="~/js/AdminActivity/MissionActivity/Stories.js" asp-append-version="true"></script>
+}
+

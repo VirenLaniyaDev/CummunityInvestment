@@ -1,0 +1,13 @@
+﻿input[name=NewBannerImage]::file-selector-button {
+    display: none;
+}
+
+.file-upload-label {
+    cursor: pointer;
+}
+
+.banner-image-preview-container img{
+    width: 50%;
+    object-fit: cover;
+    border-radius: 8px;
+}

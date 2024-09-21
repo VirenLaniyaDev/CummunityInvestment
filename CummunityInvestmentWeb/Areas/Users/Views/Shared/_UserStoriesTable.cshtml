@@ -1,0 +1,119 @@
+﻿@model PageList<Story>
+
+@if (Model != null)
+{
+    <div class="table-responsive">
+        <table class="table align-middle border" id="user-stories-table" style="min-width: 576px">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Story Title</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Last Updated</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Items.Count > 0)
+                {
+                    @foreach (var userStory in Model.Items)
+                    {
+                        <tr>
+                            <td>@userStory.Title</td>
+                            @{
+                                string textColor = null;
+                                string storyStatus = null;
+                                switch (@userStory.Status)
+                                {
+                                    case "approved":
+                                        textColor = "text-success";
+                                        storyStatus = "Active";
+                                        break;
+                                    case "pending":
+                                        textColor = "text-warning";
+                                        storyStatus = "Pending";
+                                        break;
+                                    case "rejected":
+                                        textColor = "text-danger";
+                                        storyStatus = "Rejected";
+                                        break;
+                                    case "draft":
+                                        textColor = "text-secondary";
+                                        storyStatus = "Draft";
+                                        break;
+                                    default:
+                                        textColor = "text-success";
+                                        storyStatus = "Active";
+                                        break;
+                                }
+                            }
+                            <td class="@userStory.Status"><strong class="@textColor" style="font-weight:600;">@storyStatus</strong></td>
+                            <td>
+                                @userStory.UpdatedAt
+                            </td>
+                            <td>
+                                <a class="btn p-1" asp-controller="VolunteerStory" asp-action="Edit" asp-route-id=@userStory.StoryId>
+                                    <i class="bi bi-pencil-square md-icon icon-primary "></i>
+                                </a>
+                                <button type="button" class="btn p-1 remove-story-btn" value=@userStory.StoryId data-bs-toggle="modal" data-bs-target="#confirm-remove-modal">
+                                    <i class="bi bi-trash md-icon"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+
+                }
+                else
+                {
+                    <tr>
+                        <th colspan="4" class="text-center">
+                            No Stories
+                        </th>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="user-stories-pager d-flex justify-content-end" id="user-stories-pager" data-current-page=@Model.Pager.CurrentPage>
+        <partial name="_Pagination" model=Model.Pager></partial>
+    </div>
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#pagination-form input").change((e) => UserStoryFilter(e));
+        $(".remove-story-btn").on('click', function (e) {
+            $(this).off('click');
+            let removeStoryBtn = $(this);
+            //console.log("Story Id:" + removeStoryBtn.val());
+            //StoryRemove(removeStoryBtn.val(), e);
+            $("#confirm-action").val(removeStoryBtn.val());
+        })
+    })
+
+            //function StoryRemove(storyId) {
+            //    function ConfirmAction(confirm) {
+            //        if (confirm) {
+            //            console.log(storyId);
+            //            $.ajax({
+            //                method: 'POST',
+            //                url: "/Users/VolunteerStory/RemoveUserStoryAjax",
+            //                datatype: 'html',
+            //                data: { StoryId: storyId },
+            //                success: function (response) {
+            //                    console.log(response);
+            //                    $("#user-stories-tbl-container").html(response);
+            //                    toastr.success('Story Removed!', 'On your request the story is successfully deleted!', toastrOptions_General);
+            //                },
+            //                error: function (xhr, status, error) {
+            //                    toastr.error('Something went wrong!', 'Story is not deleted, try again!', toastrOptions_General);
+            //                    console.log("Ajax error:" + error);
+            //                }
+            //            })
+            //        }
+            //    });
+            //}
+
+</script>
+

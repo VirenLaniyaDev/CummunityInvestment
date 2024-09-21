@@ -1,0 +1,205 @@
+﻿@using System.Security.Claims;
+@using CommunityInvestment.Application.Utilities;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CV Network</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <link href="https://cdn.datatables.net/v/bs5/dt-1.13.4/r-2.4.1/sl-1.6.2/datatables.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/root.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Shared/_AdminLayout.css" asp-append-version="true" />
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/dt-1.13.4/sl-1.6.2/datatables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+
+    @RenderSection("Styles", false)
+</head>
+<body>
+    <div id="loader" class="spinner-wrapper d-none">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container-fluid g-0">
+        <div class="d-flex g-0">
+            <div class="admin-side-navbar-container sticky-top px-4 py-5 vh-100 overflow-x-hidden overflow-y-auto w-25">
+                <nav id="admin-side-navbar">
+                    <h6 class="side-navbar-title mb-4">NAVIGATION</h6>
+                    <nav class="nav nav-pills flex-column">
+                        <a class="nav-link py-1 px-3 mb-3 @Html.ActiveLinkClass("AdminActivity", "ManageUsers")" asp-area="Administrator" asp-controller="AdminActivity" asp-action="ManageUsers">
+                            <i class="bi bi-person-fill fs-4"></i>
+                            <span class="side-nav-link-text">User</span>
+                        </a>
+                        <a class="nav-link py-1 px-3 mb-3 @Html.ActiveLinkClass("AdminActivity", "ManageCMSPages,AddCMSPage,EditCMSPage")" asp-area="Administrator" asp-controller="AdminActivity" asp-action="ManageCMSPages">
+                            <i class="bi bi-file-earmark-text-fill fs-4"></i>
+                            <span class="side-nav-link-text">CMS Page</span>
+                        </a>
+                        <a class="nav-link py-1 px-3 mb-3 @Html.ActiveLinkClass("MissionActivity", "ManageMissions,GetMissionEdit")" asp-area="Administrator" asp-controller="MissionActivity" asp-action="ManageMissions">
+                            <i class="bi bi-bullseye fs-4"></i>
+                            <span class="side-nav-link-text">Mission</span>
+                        </a>
+                        <a class="nav-link py-1 px-3 mb-3 @Html.ActiveLinkClass("MissionActivity", "MissionThemes")" asp-area="Administrator" asp-controller="MissionActivity" asp-action="MissionThemes">
+                            <i class="bi bi-grid-1x2-fill fs-4"></i>
+                            <span class="side-nav-link-text">Mission Themes</span>
+                        </a>
+                        <a class="nav-link py-1 px-3 mb-3 @Html.ActiveLinkClass("MissionActivity", "MissionSkills")" asp-area="Administrator" asp-controller="MissionActivity" asp-action="MissionSkills">
+                            <i class="bi bi-tools fs-4"></i>
+                            <span class="side-nav-link-text">Mission Skills</span>
+                        </a>
+                        <a class="nav-link py-1 px-3 mb-3 @Html.ActiveLinkClass("MissionActivity", "MissionApplications")" asp-area="Administrator" asp-controller="MissionActivity" asp-action="MissionApplications">
+                            <i class="bi bi-folder-fill fs-4"></i>
+                            <span class="side-nav-link-text">Mission Applications</span>
+                        </a>
+                        <a class="nav-link py-1 px-3 mb-3 @Html.ActiveLinkClass("MissionActivity", "Stories")" asp-area="Administrator" asp-controller="MissionActivity" asp-action="Stories">
+                            <i class="bi bi-journal-bookmark-fill fs-4"></i>
+                            <span class="side-nav-link-text">Story</span>
+                        </a>
+                        <a class="nav-link py-1 px-3 mb-3 @Html.ActiveLinkClass("AdminActivity", "ManageBanners")" asp-area="Administrator" asp-controller="AdminActivity" asp-action="ManageBanners">
+                            <i class="bi bi-layers-fill fs-4"></i>
+                            <span class="side-nav-link-text">Banner Management</span>
+                        </a>
+
+                    </nav>
+                </nav>
+            </div>
+
+            <div class="w-100">
+                <header class="sticky-top">
+                    <nav class="navbar navbar-expand-md main-navbar">
+                        <div class="container-fluid">
+                            <div class="nav-overview d-flex align-items-center">
+                                <button class="btn" type="button" id="sideNav-toggle-btn">
+                                    <svg fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M2 5.99519C2 5.44556 2.44556 5 2.99519 5H11.0048C11.5544 5 12 5.44556 12 5.99519C12 6.54482 11.5544 6.99039 11.0048 6.99039H2.99519C2.44556 6.99039 2 6.54482 2 5.99519Z"
+                                              fill="currentColor" />
+                                        <path d="M2 11.9998C2 11.4501 2.44556 11.0046 2.99519 11.0046H21.0048C21.5544 11.0046 22 11.4501 22 11.9998C22 12.5494 21.5544 12.9949 21.0048 12.9949H2.99519C2.44556 12.9949 2 12.5494 2 11.9998Z"
+                                              fill="currentColor" />
+                                        <path d="M2.99519 17.0096C2.44556 17.0096 2 17.4552 2 18.0048C2 18.5544 2.44556 19 2.99519 19H15.0048C15.5544 19 16 18.5544 16 18.0048C16 17.4552 15.5544 17.0096 15.0048 17.0096H2.99519Z"
+                                              fill="currentColor" />
+                                    </svg>
+                                </button>
+                                <span id="currentDateTime"></span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <a class="navbar-brand org-logo ms-2" asp-area="Users" asp-controller="Home" asp-action="Index"><strong>C <span class="highlight">V</span> N</strong>etwork</a>
+                            </div>
+                            <div class="nav-options-container d-flex align-items-center">
+                                <div class="nav-option btn-group profile-dropdown">
+                                    @if (User.FindFirst(ClaimTypes.NameIdentifier) != null)
+                                    {
+                                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            @if (User.FindFirst("avatar_url")?.Value != "")
+                                            {
+                                                <img src="@User.FindFirst("avatar_url")?.Value" id="user-avatar">
+                                            }
+                                            else
+                                            {
+                                                <img src="~/assets/user1.png" id="user-avatar">
+                                            }
+                                            <span class="name-down">
+                                                <span class="me-1">@User.FindFirst(ClaimTypes.Name)?.Value</span>
+                                                <i class="bi bi-chevron-down rg-icon"></i>
+                                            </span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#admin-profile-modal">Profile</button></li>
+                                            <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#admin-change-password-modal">Change Password</button></li>
+                                            <li>
+                                                <form method="post" asp-controller="Authentication" asp-action="Logout">
+                                                    <button class="btn logout-btn" type="submit">
+                                                        Logout &nbsp;
+                                                        <i class="bi bi-box-arrow-right"></i>
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+                </header>
+                <div class="main-wrapper container-fluid">
+                    <main role="main" class="pt-4 pb-4">
+                        <div>
+                            <partial name="_Notification" />
+                        </div>
+                        @RenderBody()
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="admin-profile-modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="adminProfileModal">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen-xxl-down" id="admin-profile-modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h1 class="modal-title fs-5" id="">Profile</h1>
+                    <button type="button" class="btn-close ap-cancel-action-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="contact-us-modalBody">
+
+                    <form id="admin-profile-form">
+                        @if (User.FindFirst("avatar_url")?.Value != "/assets/user-profile-avatar.svg")
+                        {
+                            <input id="AdminAvatar" name="AdminAvatar" type="hidden" value="@User.FindFirst("avatar_url")?.Value" />
+                        }
+                        <div class="content-center mb-4">
+                            <div class="admin-avatar position-relative" id="admin-avatar" data-current-avatar="@User.FindFirst("avatar_url")?.Value">
+                                <input id="NewAdminAvatar" name="NewAdminAvatar" type="file" hidden />
+                                <label for="NewAdminAvatar">
+                                    <img src="@User.FindFirst("avatar_url")?.Value" class="img-fluid" id="admin-avatar-preview">
+                                    <div class="admin-avatar-hover content-center flex-column position-absolute top-50 start-50 translate-middle rounded-circle w-100 h-100">
+                                        <i class="bi bi-camera lg-icon"></i>
+                                        <span class="admin-avatar-hover-text px-3 text-center">Change Profile Picture</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="input-container mb-3">
+                            <label for="admin-email-input" class="form-label">Email Address <small>*</small></label>
+                            <input type="email" id="admin-email-input" name="AdminEmail" class="form-control input" value="@User.FindFirst(ClaimTypes.Email)?.Value" disabled />
+                            <span class="invalid-feedback"></span>
+                        </div>
+                        <div class="input-container mb-3">
+                            <label for="admin-first-name" class="form-label">First Name <small>*</small></label>
+                            <input type="text" id="admin-first-name" name="AdminFirstName" class="form-control input" value="@User.FindFirst("FirstName")?.Value" />
+                            <span class="invalid-feedback"></span>
+                        </div>
+                        <div class="input-container mb-3">
+                            <label for="admin-last-name" class="form-label">Last Name <small>*</small></label>
+                            <input type="text" id="admin-last-name" name="AdminLastName" class="form-control input" value="@User.FindFirst("LastName")?.Value" />
+                            <span class="invalid-feedback"></span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn secondary-btn ap-cancel-action-btn" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn primary-btn" id="save-admin-profile-btn" form="admin-profile-form">
+                        <span class="btn-loader spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        <span class="btn-content">Save</span>
+                        <span class="btn-loader d-none">Please wait...</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <partial name="~/Areas/Administrator/Views/Shared/_AdminChangePasswordModal.cshtml"></partial>
+            
+        
+
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.minForCI.js"></script>
+    <script src="~/js/Shared/_AdminLayout.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

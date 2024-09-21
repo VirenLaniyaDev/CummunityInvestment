@@ -1,0 +1,133 @@
+﻿@model Story
+
+<div class="volunteer-story-container container-fluid">
+    <div class="row row-cols-1 row-cols-md-2 g-5 mb-5">
+        <div class="col-12 story-images-container">
+            <div class="story-images-wrapper">
+                @{
+                    List<StoryMedium> _StoryMedia = Model.StoryMedia.ToList();
+                    int mediaCount = _StoryMedia.Count();
+                    List<StoryMedium> _images = _StoryMedia.Where(sm => sm.StoryType.Equals("image")).ToList();
+                    List<StoryMedium> _videos = _StoryMedia.Where(sm => sm.StoryType.Equals("video")).ToList();
+                    var totalSlides = (int)mediaCount / 4;
+                    int ith_mediaImg = 0;
+                }
+                <div class="expanded-img-view mb-1">
+                    @if (_images.Count > 0)
+                    {
+                        <img src="@_images[ith_mediaImg].StoryPath" class="expanded-img" alt="Image Not found!" />
+                        <iframe id="expanded-video" class="d-none" src=""></iframe>
+                    }
+                    else if (_videos.Count > 0)
+                    {
+                        <img src="" class="expanded-img d-none" alt="Image Not found!" />
+                        <iframe id="expanded-video" src="@_videos[ith_mediaImg].StoryPath"></iframe>
+                    }
+                    else
+                    {
+                        <img src="~/assets/no-image-available.png" class="expanded-img" alt="Image Not found!" />
+                    }
+                </div>
+                @if (mediaCount > 0)
+                {
+                    <div class="img-slider-container">
+                        <div id="story-imgs-slider" class="carousel slide" data-bs-ride="false">
+                            <div class="carousel-inner">
+                                @for (int j = 0; j <= totalSlides; j++)
+                                {
+                                    int _mediaCount = 0;
+                                    <div class="carousel-item @(j==0?"active":"")">
+                                        <div class="row slide-row row-cols-4 g-1">
+                                            @while (ith_mediaImg < mediaCount && _mediaCount < 4)
+                                            {
+                                                <div class="slider-img-wrapper">
+                                                    @if (@_StoryMedia[ith_mediaImg].StoryType.Equals("image"))
+                                                    {
+                                                        <img src="@_StoryMedia[ith_mediaImg].StoryPath" class="slide-img d-block w-100" alt="...">
+                                                    }
+                                                    else
+                                                    {
+                                                        <div data-src="@_StoryMedia[ith_mediaImg].StoryPath" class="slide-video d-block w-100 h-100 position-relative">
+                                                            <i class="bi bi-play-circle icon-primary play-video-btn"></i>
+                                                            <i class="bi bi-pause-circle icon-primary pause-video-btn d-none"></i>
+                                                        </div>
+                                                    }
+                                                </div>
+                                                ith_mediaImg++;
+                                                _mediaCount++;
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#story-imgs-slider" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#story-imgs-slider" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-12 info-actions-container pt-5">
+            <div class="user-pgView-wrapper d-flex align-items-end justify-content-between mb-4">
+                <div class="u-avatar-name-wrapper d-flex flex-column align-items-center justify-content-end">
+                    <img src="@Model.User.Avatar" class="rounded-circle user-avatar" />
+                    <span class="mt-2">@Model.User.FirstName @Model.User.LastName</span>
+                </div>
+                <span class="btn rounded-pill border">
+                    <i class="bi bi-eye"></i>
+                    @ViewData["ViewCount"] Views
+                </span>
+            </div>
+            <p class="why-user-volunteer mb-4">
+                @Model.User.WhyIVolunteer
+            </p>
+        </div>
+    </div>
+    <div class="story-detail-container">
+        <div class="title-underline-wrapper mb-3">
+            <h3 class="h3 title pb-3">@Model.Title</h3>
+        </div>
+        <div class="story-description">
+            @Html.Raw(Model.Description)
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        ////-- Story Detail --////
+        const missionImgsSlider = document.querySelector('#story-imgs-slider');
+        if (missionImgsSlider) {
+            const carousel = new bootstrap.Carousel(missionImgsSlider, {
+                wrap: false
+            })
+            const expandedImg = $('.expanded-img-view .expanded-img');
+            const expandedVideo = $('.expanded-img-view #expanded-video');
+            const slideVideos = $('.slider-img-wrapper .slide-video');
+
+            $('.slider-img-wrapper .slide-img').click(function () {
+                expandedVideo.addClass('d-none');
+                expandedImg.removeClass('d-none');
+                slideVideos.find(".play-video-btn").removeClass("d-none");
+                slideVideos.find(".pause-video-btn").addClass("d-none");
+                expandedImg.prop('src', $(this).prop('src'));
+            })
+
+            slideVideos.click(function () {
+                expandedImg.addClass('d-none');
+                expandedVideo.removeClass('d-none');
+                expandedVideo.prop('src', $(this).data('src'));
+                slideVideos.find(".play-video-btn").removeClass("d-none");
+                slideVideos.find(".pause-video-btn").addClass("d-none");
+                $(this).find(".play-video-btn").toggleClass("d-none");
+                $(this).find(".pause-video-btn").toggleClass("d-none");
+            })
+        }
+    })
+</script>

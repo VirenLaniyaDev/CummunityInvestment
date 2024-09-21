@@ -1,0 +1,94 @@
+﻿@model AdminMissionThemeVM
+
+@{
+    ViewData["Title"] = "Mission Themes";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@functions {
+    public string IsValidField(string Key, ModelStateDictionary modelState)
+    {
+        return modelState.TryGetValue(Key, out var entry) && entry.Errors.Count > 0 ? "is-invalid" : "";
+    }
+}
+
+@section Styles{
+    @*<link rel="stylesheet" href=@Url.Content("~/css/AdminActivity/MissionThemes.css") asp-append-version="true" />*@
+}
+
+<div class="mission-themes-container px-3">
+    <div class="title-underline-wrapper mb-4">
+        <h4 class="title pb-3">Mission Theme</h4>
+    </div>
+    <div class="row mb-4">
+        <div class="col-8 col-lg-6">
+            <input class="form-control input input-search" id="table-search" placeholder="Search Mission Theme" />
+        </div>
+        <div class="col-4 col-lg-6 text-end">
+            <a class="btn primary-btn" id="admin-add-missionTheme-btn" data-bs-toggle="modal" data-bs-target="#mission-theme-modal">
+                <i class="bi bi-plus-lg rg-icon"></i>
+                <span>Add</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Mission Themes table -->
+    <div class="w-100">
+        <div class="table-responsive admin-table-wrapper">
+            <table class="table align-middle admin-table w-100 border" id="mission-themes-table">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">Mission Theme Title</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="mission-theme-modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="missionThemeModal">
+        <div class="modal-dialog modal-dialog-centered modal-fullscreen-xxl-down" id="admin-mission-theme-modal-dialog">
+            <div class="modal-content">
+                <form id="mission-theme-form">
+                    <div class="modal-header border-bottom-0">
+                        <h1 class="modal-title fs-5" id="">Add Mission Theme</h1>
+                        <button type="button" class="btn-close cancel-action-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="mission-theme-modalBody">
+                        <input asp-for="MissionThemeId" hidden />
+                        <div class="input-container mb-3">
+                            <label asp-for="ThemeTitle" class="form-label"></label>
+                            <input asp-for="ThemeTitle" class="form-control input @IsValidField("ThemeTitle", ViewData.ModelState)" placeholder="Enter Mission Theme Title">
+                            <span asp-validation-for="ThemeTitle" class="invalid-feedback"></span>
+                        </div>
+                        <div class="input-container mb-3">
+                            <label asp-for="Status" class="form-label"></label>
+                            <select asp-for="Status" class="form-select input @IsValidField("Status", ViewData.ModelState)">
+                                <option value="1">Active</option>
+                                <option value="0">InActive</option>
+                            </select>
+                            <span asp-validation-for="Status" class="invalid-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn secondary-btn cancel-action-btn" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn primary-btn" id="save-missionTheme-btn">
+                            <span class="btn-loader spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                            <span class="btn-content">Save</span>
+                            <span class="btn-loader d-none">Please wait...</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <partial name="_RemoveItemConfirmModal"></partial>
+</div>
+
+@section Scripts {
+    <script src="~/js/AdminActivity/MissionActivity/MissionThemes.js" asp-append-version="true"></script>
+}
+

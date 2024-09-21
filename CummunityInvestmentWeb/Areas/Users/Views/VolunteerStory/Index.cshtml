@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Volunteer Stories";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/css/VolunteerStory/Index.css") asp-append-version="true" />
+}
+
+<div class="banner-container container-fluid p-0 mb-5">
+    <img src="~/assets/Grow-Trees-On-the-path-to-environment-sustainability-login.png" class="banner-img" />
+    <div class="banner-content-wrapper content-center">
+        <div class="container banner-content d-flex flex-column align-items-center">
+            <p class="banner-content-text text-center">
+                Volunteering is a fulfilling and enriching activity that not only benefits the community but also the individual who is volunteering. It allows people to give back to society, learn new skills, and make a positive impact on the world.
+            </p>
+            <a class="btn rounded-pill banner-content-btn" asp-action="ShareStory">
+                Share your story
+                <i class="bi bi-arrow-right md-icon"></i>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="story-cards-container container" id="story-listing-container">
+    <partial name="~/Areas/Users/Views/Shared/_VolunteerStoryListing.cshtml" model=Model />
+</div>
+            
+
+@section Scripts{
+}

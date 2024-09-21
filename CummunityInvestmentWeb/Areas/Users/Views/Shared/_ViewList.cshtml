@@ -1,0 +1,9 @@
+﻿@model IEnumerable<City>
+
+@foreach (City city in Model)
+{
+    <li class="list-group-item">
+        <input type="checkbox" name="CityFilter" class="btn-check" id="city-@city.CityId" value="@city.Name" autocomplete="off">
+        <label class="stretched-link" for="city-@city.CityId">@city.Name</label>
+    </li>
+}

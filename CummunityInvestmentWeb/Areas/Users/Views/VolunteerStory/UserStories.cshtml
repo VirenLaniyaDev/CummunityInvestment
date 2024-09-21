@@ -1,0 +1,46 @@
+﻿@model List<Story>
+@{
+    ViewData["Title"] = "Your Stories";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles{
+    <link href="~/css/VolunteerStory/UserStories.css" rel="stylesheet" asp-append-version="true"/>
+}
+
+<h2 class="title mb-5">My Stories</h2>
+
+<div class="user-stories-container">
+    <form id="u-story-filter-form">
+        <div class="row g-3 user-story-filter-wrapper mb-4">
+            <div class="col-12 col-md-6">
+                <input class="form-control input input-search" id="SearchStory" name="SearchStory" placeholder="Search Story" />
+            </div>
+            <div class="col-6 col-md-3">
+                <select class="form-select input" id="StoryStatus" name="StoryStatus">
+                    <option value="">All</option>
+                    <option value="published">Active</option>
+                    <option value="draft">Draft</option>
+                    <option value="pending">Pending</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+            </div>
+            <div class="col-6 col-md-3">
+                <select class="form-select input" id="StorySortBy" name="StorySortBy">
+                    <option value="Latest">Latest</option>
+                    <option value="Oldest">Oldest</option>
+                </select>
+            </div>
+        </div>
+    </form>
+    
+    <div id="user-stories-tbl-container">
+        <partial name="~/Areas/Users/Views/Shared/_UserStoriesTable.cshtml" model=Model></partial>
+    </div>
+    <partial name="_RemoveItemConfirmModal"></partial>
+</div>
+
+@section Scripts{
+    <script src="~/js/VolunteerStory/UserStories.js" asp-append-version="true"></script>
+}
+

@@ -1,0 +1,132 @@
+﻿@model StoryCreateVM
+
+@{
+    ViewData["Title"] = "Share Story";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var userIdentifier = User.FindFirst(ClaimTypes.NameIdentifier);
+    long userId = 0;
+    Int64.TryParse(userIdentifier.Value, out userId);
+    var _UserVolunteeredMA = ViewBag.UserVolunteeredMA;
+}
+
+@functions {
+    public string IsValidField(string Key, ModelStateDictionary modelState)
+    {
+        return modelState.TryGetValue(Key, out var entry) && entry.Errors.Count > 0 ? "is-invalid" : "";
+    }
+}
+
+@section Styles{
+    <script src="https://cdn.tiny.cloud/1/lpumg45i4q2ziehmjw6hy6wouivhb4vr6wypem4t2jm1cc27/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+    <link rel="stylesheet" href=@Url.Content("~/css/VolunteerStory/ShareStory.css") asp-append-version="true" />
+    <script>
+        var storyId = @((Model != null) ? Model.StoryId ?? 0 : 0);
+        console.log(storyId);
+    </script>
+}
+
+<div class="share-story-container">
+    <div class="share-story-heading mb-5">
+        <h2>Share your Story</h2>
+    </div>
+    <form method="POST" enctype="multipart/form-data" id="share-story-form" asp-action="ShareStory">
+        <div class="shareStory-form-container row g-4">
+            @if (userId != 0)
+            {
+                <input asp-for="UserId" value=@userId hidden />
+            }
+            @if(Model != null && Model.StoryId != null)
+            {
+                <input asp-for="StoryId" value=@Model.StoryId hidden />
+            }
+            @if(Model != null && Model.StoryStatus != null)
+            {
+                <input asp-for="StoryStatus" value=@Model.StoryStatus hidden />
+            }
+
+            <div class="input-container col-12 col-md-6 col-lg-4">
+                <label asp-for="MissionId" class="form-label"></label>
+                <select asp-for="MissionId" class="form-select input @IsValidField("MissionId", ViewData.ModelState)">
+                    <option value="">Select your mission</option>
+                    @foreach (var volunteeredMA in _UserVolunteeredMA)
+                    {
+                        <option value=@volunteeredMA.Mission.MissionId>@volunteeredMA.Mission.Title</option>
+                    }
+                </select>
+                <span asp-validation-for="MissionId" class="invalid-feedback"></span>
+            </div>
+            <div class="input-container col-12 col-md-6 col-lg-4">
+                <label asp-for="Title" class="form-label"></label>
+                <input asp-for="Title" class="form-control input @IsValidField("Title", ViewData.ModelState)" placeholder="Enter story title">
+                <span asp-validation-for="Title" class="invalid-feedback"></span>
+            </div>
+            <div class="input-container col-12 col-md-6 col-lg-4">
+                <label asp-for="PublishedAt" class="form-label"></label>
+                <input asp-for="PublishedAt" class="form-control input" placeholder="Select date">
+                <span class="invalid-feedback"></span>
+            </div>
+            <div class="input-container col-12">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" id="story-description"></textarea>
+            </div>
+            <div class="input-container col-12">
+                <label asp-for="StoryVideoURLs" class="form-label"></label>
+                <textarea asp-for="StoryVideoURLs" class="form-control input @IsValidField("StoryVideoURLs", ViewData.ModelState)" placeholder="Enter your URL"></textarea>
+                <span asp-validation-for="StoryVideoURLs" class="invalid-feedback"></span>
+            </div>
+            <div class="input-container col-12">
+                <label for="drag-drop-zone" class="form-label">
+                    Upload your Photos
+                </label>
+                @*<input asp-for="StoryImages" hidden/>*@
+                <input asp-for="StoryImagesUniqueNames" type="hidden" value="" />
+                <div id="drag-drop-zone" class="content-center dropzone flex-column mb-3"></div>
+                <div id="story-image-preview" class="dropzone"></div>
+                @*<div class="dropzone-previews dropzone" id="drop-prev"></div>*@
+            </div>
+            <div class="form-action-wrapper d-flex justify-content-between">
+                <div>
+                    <a class="btn secondary-btn" asp-controller="VolunteerStory" asp-action="UserStories">Cancel</a>
+                    @if(Model != null && Model.StoryStatus != null)
+                    {
+                        <button type="button" class="btn secondary-btn" id="remove-story-btn" value=@Model.StoryId data-bs-toggle="modal" data-bs-target="#confirm-remove-modal">Remove</button>
+                        <partial name="_RemoveItemConfirmModal"></partial>
+                    }
+                </div>
+                <div class="">
+                    <input asp-for="StoryAction" value="draft" hidden />
+                    @if (Model != null && (Model.StoryStatus == "draft" || Model.StoryStatus == "pending" || Model.StoryStatus == "rejected"))
+                    {
+                        <a class="btn primary-btn" asp-controller="VolunteerStory" asp-action="Preview" asp-route-id=@Model.StoryId>Preview</a>
+                    }
+                    <button type="submit" name="storyAction" class="btn primary-btn" id="story-form-saveBtn" value="save">
+                        <span class="btn-loader spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        <span class="btn-content">Save</span>
+                        <span class="btn-loader d-none">Saving...</span>
+                    </button>
+                    <button type="submit" name="storyAction" class="btn primary-btn" id="story-form-submitBtn" value="submit" @(Model?.StoryStatus != null?"":"disabled")>
+                        <span class="btn-loader spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        @if (Model != null && (Model.StoryStatus == "pending" || Model.StoryStatus == "published" || Model.StoryStatus == "rejected"))
+                        {
+                            <span class="btn-content">Update</span>
+                            <span class="btn-loader d-none">Updating...</span>
+                        } 
+                        else
+                        {
+                            <span class="btn-content">Submit</span>
+                            <span class="btn-loader d-none">Submitting...</span>
+                        }
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.minForCI.js"></script>
+    <script src="~/js/VolunteerStory/ShareStory.js" asp-append-version="true"></script>
+}

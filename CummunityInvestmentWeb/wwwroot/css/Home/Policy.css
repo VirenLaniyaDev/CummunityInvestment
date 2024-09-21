@@ -1,0 +1,26 @@
+﻿.pcp-policy-title-list-wrapper {
+    position: sticky;
+    top: 85px;
+    height: 80vh;
+    overflow-y: auto;
+}
+
+#pcp-policy-title-list .list-group-item-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#pcp-policy-title-list .list-group-item-action *{
+    color: var(--secondary-clr);
+}
+
+    #pcp-policy-title-list .list-group-item-action.active {
+        background: none;
+        border-color: var(--border-clr);
+    }
+
+    #pcp-policy-title-list .list-group-item-action.active * {
+        font-weight: 500;
+        color: var(--font-clr);
+    }

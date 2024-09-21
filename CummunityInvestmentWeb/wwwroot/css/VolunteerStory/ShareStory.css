@@ -1,0 +1,83 @@
+﻿.input-container #drag-drop-zone{
+    height: 160px;
+    border: 1px dashed var(--border-clr);
+}
+
+#drag-drop-zone .add-icon{
+    font-size:3rem;
+    color: var(--border-clr);
+}
+
+#drag-drop-zone .drag-drop-text {
+    color: var(--border-clr);
+}
+
+#drag-drop-zone.dragover{
+    border: 1px solid var(--font-clr);
+}
+
+#drag-drop-zone.dragover * {
+    color: var(--font-clr);
+}
+
+#story-image-preview{
+    min-height: auto;
+    border:none;
+    padding: 0;
+}
+
+/* Dropzone Preview styling*/
+.dropzone .dz-preview{
+    margin:8px 16px 8px 0;
+}
+
+.dropzone .dz-preview .dz-image {
+    width: 112px;
+    height: 112px;
+    border-radius: 0;
+    z-index: 2;
+}
+
+    .dropzone .dz-preview .dz-image img{
+        width: 100%;
+        height: 100%;
+    }
+
+    .dropzone .dz-preview .dz-details {
+        z-index: 3;
+    }
+
+.dropzone .dz-preview .dz-progress{
+    z-index: 5;
+    top:50%;
+    height: 12px;
+    opacity: 0;
+}
+
+.dropzone .dz-preview .dz-success-mark, 
+.dropzone .dz-preview .dz-error-mark{
+    z-index: 6;
+    margin-left: 0!important;
+    margin-top: 0!important;
+    transform: translate(-50%, -50%)!important;
+}
+
+    .dropzone .dz-preview .dz-success-mark .mark-icon,
+    .dropzone .dz-preview .dz-error-mark .mark-icon{
+        color: #FFFFFF;
+        font-size: 32px;
+    }
+
+    .dropzone .dz-preview .dz-remove {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 10;
+        background-color: rgba(0, 0, 0, 0.6);
+        padding: 2px 4px;
+        border-radius: 0;
+    }
+
+    .dropzone .dz-preview .dz-remove *{
+        color: #FFFFFF;
+    }

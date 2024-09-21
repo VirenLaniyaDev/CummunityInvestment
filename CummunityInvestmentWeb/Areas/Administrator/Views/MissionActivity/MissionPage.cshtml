@@ -1,0 +1,302 @@
+﻿@model AdminMissionVM
+@{
+    ViewData["Title"] = "MissionPage";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles{
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+    <script src="https://cdn.tiny.cloud/1/lpumg45i4q2ziehmjw6hy6wouivhb4vr6wypem4t2jm1cc27/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <link rel="stylesheet" href=@Url.Content("~/css/AdminActivity/MissionActivity/MissionPage.css") asp-append-version="true" />
+}
+
+@functions {
+    public string IsValidField(string Key, ModelStateDictionary modelState)
+    {
+        return modelState.TryGetValue(Key, out var entry) && entry.Errors.Count > 0 ? "is-invalid" : "";
+    }
+}
+
+<div class="mission-container px-3" id="mission-container" data-mission-id="@Model?.MissionId">
+    <div class="mission-head px-4 py-3 bg-light border">
+        @if (Model != null && Model.MissionId != null)
+        {
+            <h4 class="m-0">Edit Mission</h4>
+        }
+        else
+        {
+            <h4 class="m-0">Add New Mission</h4>
+        }
+    </div>
+    <div class="mission-main px-4 py-3 mb-4 border">
+        <form id="mission-form" asp-action="SaveMission" method="post">
+            <input asp-for="MissionId" hidden />
+            <div class="row g-4">
+                <div class="input-container col-12">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control input @IsValidField("Title", ViewData.ModelState)" placeholder="Enter Content page title">
+                    <span asp-validation-for="Title" class="invalid-feedback"></span>
+                </div>
+                <div class="input-container col-12 col-md-6">
+                    <label asp-for="MissionType" class="form-label"></label>
+                    <select asp-for="MissionType" class="form-select input @IsValidField("MissionType", ViewData.ModelState)">
+                        <option value="goal">Goal</option>
+                        <option value="time">Time</option>
+                    </select>
+                    <span asp-validation-for="MissionType" class="invalid-feedback"></span>
+                </div>
+                <div class="input-container col-12 col-md-6">
+                    <label asp-for="ThemeId" class="form-label"></label>
+                    <select asp-for="ThemeId" class="form-select input @IsValidField("ThemeId", ViewData.ModelState)">
+                        <option value="">-- Select Mission Theme --</option>
+                        @foreach (var theme in ViewBag.Themes)
+                        {
+                            <option value=@theme.MissionThemeId>@theme.Title</option>
+                        }
+                    </select>
+                    <span asp-validation-for="ThemeId" class="invalid-feedback"></span>
+                </div>
+                <div class="input-container col-12 col-md-6">
+                    <label asp-for="CountryId" class="form-label"></label>
+                    <select asp-for="CountryId" class="form-select input @IsValidField("CountryId", ViewData.ModelState)">
+                        <option value="">-- Select your Country --</option>
+                        @foreach (var country in ViewBag.Countries)
+                        {
+                            <option value=@country.CountryId>@country.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CountryId" class="invalid-feedback"></span>
+                </div>
+                <div class="input-container col-12 col-md-6">
+                    <label asp-for="CityId" class="form-label"></label>
+                    <select asp-for="CityId" class="form-select input @IsValidField("CityId", ViewData.ModelState)">
+                        @if(ViewBag.CountryCities != null)
+                        {
+                            @foreach (var city in ViewBag.CountryCities)
+                            {
+                                <option value=@city.CityId>@city.Name</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="CityId" class="invalid-feedback"></span>
+                </div>
+                <div class="input-container col-12 col-md-6">
+                    <label asp-for="StartDate" class="form-label"></label>
+                    <input asp-for="StartDate" class="form-control input @IsValidField("StartDate", ViewData.ModelState)">
+                    <span asp-validation-for="StartDate" class="invalid-feedback"></span>
+                </div>
+                <div class="input-container col-12 col-md-6">
+                    <label asp-for="EndDate" class="form-label"></label>
+                    <input asp-for="EndDate" class="form-control input @IsValidField("EndDate", ViewData.ModelState)">
+                    <span asp-validation-for="EndDate" class="invalid-feedback"></span>
+                </div>
+                <div class="input-container col-12 col-md-6">
+                    <label asp-for="RegistrationDeadline" class="form-label"></label>
+                    <input asp-for="RegistrationDeadline" class="form-control input @IsValidField("RegistrationDeadline", ViewData.ModelState)">
+                    <span asp-validation-for="RegistrationDeadline" class="invalid-feedback"></span>
+                </div>
+                <div class="input-container col-12 col-md-6">
+                    <label asp-for="GoalValue" class="form-label" id="GoalValueLabel"></label>
+                    <input asp-for="GoalValue" class="form-control input @IsValidField("GoalValue", ViewData.ModelState)">
+                    <span asp-validation-for="GoalValue" class="invalid-feedback"></span>
+                </div>
+                <div class="input-container col-12">
+                    <label asp-for="GoalObjectiveText" class="form-label"></label>
+                    <input asp-for="GoalObjectiveText" class="form-control input @IsValidField("GoalObjectiveText", ViewData.ModelState)" placeholder="Enter Content page title">
+                    <span asp-validation-for="GoalObjectiveText" class="invalid-feedback"></span>
+                </div>
+                <div class="input-container col-12">
+                    <label asp-for="ShortDescription" class="form-label"></label>
+                    <input asp-for="ShortDescription" class="form-control input @IsValidField("ShortDescription", ViewData.ModelState)" placeholder="Enter Content page title">
+                    <span asp-validation-for="ShortDescription" class="invalid-feedback"></span>
+                </div>
+                <div class="input-container col-12">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" id="mission-description"></textarea>
+                </div>
+                <div class="input-container col-12">
+                    <label asp-for="OrganizationName" class="form-label"></label>
+                    <input asp-for="OrganizationName" class="form-control input @IsValidField("OrganizationName", ViewData.ModelState)" placeholder="Enter Content page title">
+                    <span asp-validation-for="OrganizationName" class="invalid-feedback"></span>
+                </div>
+                <div class="input-container col-12">
+                    <label asp-for="OrganizationDetail" class="form-label"></label>
+                    <textarea asp-for="OrganizationDetail" id="organization-detail"></textarea>
+                </div>
+                <div class="input-container col-12 col-md-6">
+                    <label asp-for="Availability" class="form-label"></label>
+                    <select asp-for="Availability" class="form-select input @IsValidField("Availability", ViewData.ModelState)">
+                        <option value="">Select your availability</option>
+                        <option value="Daily">Daily</option>
+                        <option value="Weekend">Weekend</option>
+                        <option value="Weekly">Weekly</option>
+                        <option value="Monthly">Monthly</option>
+                    </select>
+                    <span asp-validation-for="Availability" class="invalid-feedback"></span>
+                </div>
+                <div class="input-container col-12 col-md-6">
+                    <label asp-for="Status" class="form-label"></label>
+                    <select asp-for="Status" class="form-select input @IsValidField("Status", ViewData.ModelState)">
+                        <option value="1">Active</option>
+                        <option value="0">InActive</option>
+                    </select>
+                    <span asp-validation-for="Status" class="invalid-feedback"></span>
+                </div>
+
+                <div class="input-container col-12">
+                    <label for="drag-drop-zone" class="form-label">
+                        Upload Mission Images
+                    </label>
+                    <input asp-for="MissionImagesUniqueNames" type="hidden" value="" />
+                    <div id="drag-drop-zone" class="content-center dropzone flex-column mb-3"></div>
+                    <div id="mission-image-preview" class="dropzone"></div>
+                </div>
+
+                <!-- Skills -->
+                <div class="mission-skills-container col-12 g-4 mb-2">
+                    <label class="form-label">Mission Skills</label>
+                    <div class="mission-skills-wrapper mb-3">
+                        <ul class="list-group border" id="saved-mission-skills-list">
+                            @if (Model != null && Model.SkillIds.Any())
+                            {
+                                @foreach (var skill in ViewBag.Skills)
+                                {
+                                    @if (Model.SkillIds.Any(sid => sid == skill.SkillId))
+                                    {
+                                        <li class="list-group-item py-1">
+                                            <input type="checkbox" name="SkillIds" value=@skill.SkillId checked hidden readonly>
+                                            <label>@skill.SkillName</label>
+                                        </li>
+                                    }
+                                }
+                            }
+                        </ul>
+                    </div>
+                    <div class="mission-add-skills-btn-wrapper">
+                        <button type="button" class="btn secondary-btn px-4" data-bs-toggle="modal" data-bs-target="#mission-add-skills-modal">Add Skills</button>
+                    </div>
+                    <div class="modal fade" id="mission-add-skills-modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addSkillsModal">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header border-bottom-0">
+                                    <h1 class="modal-title fs-5" id="">Add your Skills</h1>
+                                    <button type="button" class="btn-close close-select-skills-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body" id="mission-add-skills-modalBody">
+                                    <div class="container-fluid">
+                                        <div class="row skill-selector-wrapper">
+                                            <div class="col border py-2 px-0 skill-selector-item" id="mission-skill-select">
+                                                <ul class="list-group list-group-flush mission-skill-list" id="mission-skills-select-list">
+                                                    @foreach (var skill in ViewBag.Skills)
+                                                    {
+                                                        <li class="list-group-item py-1 border-bottom-0 mb-1">
+                                                            @if (Model != null && Model.SkillIds.Any(sid => sid == skill.SkillId))
+                                                            {
+                                                                <input type="checkbox" name="Skills" class="btn-check" id="mission-skills-@skill.SkillId" value=@skill.SkillId autocomplete="off" checked />
+                                                            }
+                                                            else
+                                                            {
+                                                                <input type="checkbox" name="Skills" class="btn-check" id="mission-skills-@skill.SkillId" value=@skill.SkillId autocomplete="off" />
+                                                            }
+                                                            <label class="stretched-link" for="mission-skills-@skill.SkillId">@skill.SkillName</label>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                            <div class="col-12 col-md-1 content-center flex-row flex-md-column row-gap-1 skill-selector-item" id="mission-modal-skill-actions">
+                                                <button type="button" id="add-selected-skills-btn" class="btn">
+                                                    <i class="bi bi-chevron-right d-md-block d-none"></i>
+                                                    <i class="bi bi-chevron-down d-block d-md-none"></i>
+                                                </button>
+                                                <button type="button" id="remove-selected-skills-btn" class="btn">
+                                                    <i class="bi bi-chevron-left d-md-block d-none"></i>
+                                                    <i class="bi bi-chevron-up d-block d-md-none"></i>
+                                                </button>
+                                            </div>
+                                            <div class="col border py-2 px-0 skill-selector-item" id="mission-selected-skills">
+                                                <ul class="list-group list-group-flush mission-skill-list" id="mission-selected-skills-list">
+                                                    @if (Model != null && Model.SkillIds.Any())
+                                                    {
+                                                        @foreach (var skill in ViewBag.Skills)
+                                                        {
+                                                            @if (Model.SkillIds.Any(sid => sid == skill.SkillId))
+                                                            {
+                                                                <li class="list-group-item py-1 border-bottom-0 mb-1">
+                                                                    @if (Model.SkillIds.Any(sid => sid == skill.SkillId))
+                                                                    {
+                                                                        <input type="checkbox" name="selectedSkills" class="btn-check" id="mission-selectedSkills-@skill.SkillId" value=@skill.SkillId autocomplete="off" />
+                                                                    }
+                                                                    <label class="stretched-link" for="mission-selectedSkills-@skill.SkillId">@skill.SkillName</label>
+                                                                </li>
+                                                            }
+                                                        }
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer justify-content-start border-0">
+                                    <button type="button" class="btn secondary-btn close-select-skills-btn" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn primary-btn" id="mission-save-skills-btn">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mission Documents -->
+                <div class="input-container col-12">
+                    <label for="missionDocs-drag-drop-zone" class="form-label">
+                        Upload Mission Documents
+                    </label>
+                    <input asp-for="MissionDocumentsUniqueNames" type="hidden" value="" />
+                    <div id="missionDocs-drag-drop-zone" class="content-center dropzone flex-column mb-3"></div>
+                    @*<div id="mission-documents-preview" class="dropzone"></div>*@
+                    <div class="table table-striped files" id="mission-documents-preview">
+                        <div id="missionDocs-template" class="file-row dz-image-preview">
+                            <!-- This is used as the file preview template -->
+                            <div class="text-center img-thumbnail-col">
+                                <span class="preview"><img data-dz-thumbnail class="dz-image"></span>
+                            </div>
+                            <div class="file-name-col">
+                                <p class="name" data-dz-name></p>
+                                <strong class="error text-danger" data-dz-errormessage></strong>
+                            </div>
+                            <div class="file-size-col">
+                                <p class="size" data-dz-size></p>
+                                <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                    <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+                                </div>
+                            </div>
+                            <div class="file-action-col">
+                                <button data-dz-remove class="btn danger-btn delete">
+                                    <i class="bi bi-trash"></i>
+                                    <span>Remove</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="mission-footer text-end">
+        <a class="btn secondary-btn cancel-action-btn" asp-area="Administrator" asp-controller="MissionActivity" asp-action="ManageMissions">Cancel</a>
+        <button type="submit" class="btn primary-btn px-4" id="mission-save-btn" form="mission-form">
+            <span class="btn-loader spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+            <span class="btn-content">Save</span>
+            <span class="btn-loader d-none">Please wait...</span>
+        </button>
+    </div>
+</div>
+
+@section Scripts{
+    @*<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.minForCI.js"></script>*@
+    <script src="~/js/AdminActivity/MissionActivity/MissionPage.js" asp-append-version="true"></script>
+}
+
+

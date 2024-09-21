@@ -1,0 +1,652 @@
+﻿@using System.Security.Claims;
+@model MissionDetailsVM
+
+@{
+    ViewData["Title"] = "VolunteeringMission";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var userIdentifier = User.FindFirst(ClaimTypes.NameIdentifier);
+    var _Mission = Model;
+    List<MissionsDetailsVM> _Missions = Model.RelatedMissions;
+    MissionRecentVolunteersVM missionRecentVolunteers = new MissionRecentVolunteersVM
+            {
+                MissionApplications = _Mission.MissionApplications,
+                Pager = ViewBag.Pager
+            };
+}
+
+@section Styles{
+    <link rel="stylesheet" href="@Url.Content("~/css/Home/VolunteeringMission.css")" asp-append-version="true" />
+    <script>
+        const userIdentifier = @Convert.ToInt64(userIdentifier?.Value);
+    </script>
+}
+
+<section class="volunteering-mission-container">
+    <div class="row row-cols-1 row-cols-md-2 g-5 mb-5">
+        <div class="col-12 mission-images-container">
+            <div class="mission-images-wrapper">
+                @{
+                    int mediaCount = _Mission.MissionMedia.Count();
+                    var totalSlides = (int)mediaCount / 4;
+                    int ith_mediaImg = 0;
+                }
+                <div class="expanded-img-view mb-1">
+                    @if (mediaCount > 0)
+                    {
+                        <img src="@_Mission.MissionMedia[ith_mediaImg].MediaPath" class="expanded-img" alt="Image Not found!" />
+                    }
+                    else
+                    {
+                        <img src="~/assets/no-image-available.png" class="expanded-img" alt="Image Not found!" />
+                    }
+                </div>
+                @if (mediaCount > 0)
+                {
+                    <div class="img-slider-container">
+                        <div id="mission-imgs-slider" class="carousel slide" data-bs-ride="false">
+                            <div class="carousel-inner">
+                                @for (int j = 0; j <= totalSlides; j++)
+                                {
+                                    int imgMediaCount = 0;
+                                    <div class="carousel-item @(j==0?"active":"")">
+                                        <div class="row slide-row row-cols-4 g-1">
+                                            @while (ith_mediaImg < mediaCount && imgMediaCount < 4)
+                                            {
+                                                <div class="slider-img-wrapper">
+                                                    <img src="@_Mission.MissionMedia[ith_mediaImg].MediaPath" class="d-block w-100" alt="...">
+                                                </div>
+                                                ith_mediaImg++;
+                                                imgMediaCount++;
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#mission-imgs-slider" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#mission-imgs-slider" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-12 info-actions-container">
+            <div class="info-actions-wrapper">
+                <div class="mission-title-description mb-4">
+                    <h1 class="h1">@_Mission.Title</h1>
+                    <p class="short-description">@_Mission.ShortDescription</p>
+                </div>
+                @{
+                    string missionStartDate = null, missionEndDate = null;
+                    if (_Mission.StartDate != null)
+                    {
+                        missionStartDate = ((DateTime)_Mission.StartDate).ToString("dd/MM/yyyy").Replace("-", "/");
+                    }
+                    if (_Mission.EndDate != null)
+                    {
+                        missionEndDate = ((DateTime)_Mission.EndDate).ToString("dd/MM/yyyy").Replace("-", "/");
+                    }
+                }
+                <div class="badge-divider mb-3">
+                    @if (_Mission.GoalMission?.GoalObjectiveText != null)
+                    {
+                        <div class="badge rounded-pill card-body-badge">
+                            @_Mission.GoalMission.GoalObjectiveText
+                        </div>
+                    }
+                    else if (_Mission.StartDate <= DateTime.Today && _Mission.EndDate >= DateTime.Today)
+                    {
+                        <div class="badge rounded-pill card-body-badge">
+                            Ongoing Opportunity
+                        </div>
+                        
+                    }
+                    else if (missionStartDate != null && missionEndDate != null)
+                    {
+                        <div class="badge rounded-pill card-body-badge">
+                            From @missionStartDate until @missionEndDate
+                        </div>
+                    }
+                </div>
+                <div class="info-container pb-3 d-flex justify-content-between column-gap-3 mb-4">
+                    @{
+                        int count = 0;
+                    }
+                    @if (_Mission.MissionType == "time" && _Mission.GoalMission?.GoalValue != null)
+                    {
+                        <div class="info-box content-center">
+                            <i class="bi bi-person-check lg-icon"></i>
+                            <div class="info">
+                                <strong class="info-strong">@(_Mission.GoalMission.GoalValue - _Mission.TotalVolunteers)</strong>
+                                <div class="info-for">Seats left</div>
+                            </div>
+                        </div>
+                        count++;
+                    }
+                    @if (_Mission.MissionType == "goal" && _Mission.GoalMission?.GoalValue != null && _Mission.GoalAchieved != null)
+                    {
+                        var barPercent = _Mission.GoalMission.GoalValue == 0 ? 0 :(_Mission.GoalAchieved * 100) / _Mission.GoalMission.GoalValue;
+                        <div class="info-box content-center flex-grow-1">
+                            <i class="bi bi-bullseye lg-icon"></i>
+                            <div class="info">
+                                <div class="progress" role="progressbar" aria-label="Danger example" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar" style="width: @barPercent%"></div>
+                                </div>
+                                <div class="info-for">@_Mission.GoalAchieved Achieved</div>
+                            </div>
+                        </div>
+                        count++;
+                    }
+                    @if (_Mission.EndDate != null)
+                    {
+                        <div class="info-box content-center">
+                            <i class="bi bi-clock lg-icon "></i>
+                            <div class="info">
+                                <strong class="info-strong">@missionEndDate</strong>
+                                <div class="info-for">Deadline</div>
+                            </div>
+                        </div>
+                        count++;
+                    }
+                    <div class="info-box content-center @(count>=2 ? "d-none":"")">
+                        <i class="bi bi-person lg-icon"></i>
+                        <div class="info">
+                            <strong class="info-strong">@_Mission.TotalVolunteers</strong>
+                            <div class="info-for">Already Volunteered</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="favorite-invite-wrapper content-center flex-column flex-lg-row column-gap-3 row-gap-3 mb-4">
+                <form method="post" class="mission-favorite-form w-100">
+                    @if (userIdentifier != null)
+                    {
+                        <input type="hidden" name="MissionId" value=@_Mission.MissionId />
+                        <input type="hidden" name="UserId" value=@userIdentifier?.Value />
+                    }
+                    <button type="submit" class="btn secondary-btn w-100 content-center favorite-btn" data-bs-toggle="tooltip" data-bs-title="Favorite">
+                        @if (_Mission.IsFavorite)
+                        {
+                            <i class="bi bi-heart-fill favorite-icon md-icon icon-primary me-2"></i>
+                            <span id="favorite-btn-text">Remove from Favorite</span>
+                        }
+                        else
+                        {
+                            <i class="bi bi-heart favorite-icon md-icon me-2"></i>
+                            <span id="favorite-btn-text">Add to Favorite</span>
+                        }
+                    </button>
+                </form>
+                <button class="btn secondary-btn w-100 content-center recommend-to-coWorkers-btn" data-invite-mission-id=@_Mission.MissionId>
+                    <i class="bi bi-person-plus md-icon me-2"></i>
+                    Recommend to Co-workers
+                </button>
+                @*<partial name="~/Areas/Users/Views/Shared/_RecommendToCoWorkers.cshtml" model="_Mission.CoWorkers"></partial>*@
+            </div>
+            @if (_Mission.UserApplied && _Mission.MissionApplications.FirstOrDefault(ma=>ma.UserId.ToString() == userIdentifier?.Value)?.ApprovalStatus == "approved")
+            {
+                <div class="badge-divider mb-4">
+                    @{
+                        int userRating = 0;
+                        Int32.TryParse(_Mission.UserRating?.Rating, out userRating);
+                        bool IsUnderRating(int currentRatingPoint)
+                        {
+                            return (currentRatingPoint <= userRating);
+                        }
+                    }
+                    <form class="px-2" id="feedback-ratings-form">
+                        <input type="hidden" name="MissionId" value=@_Mission.MissionId />
+                        <input type="hidden" name="UserId" value=@userIdentifier?.Value />
+                        <div class="feedback-rate d-flex column-gap-1">
+                            <input type="radio" id="star1" name="rating" value="1" />
+                            <label for="star1" title="Very Bad">
+                                <i class="bi bi-star star-icon md-icon @(IsUnderRating(1)?"d-none":"")"></i>
+                                <i class="bi bi-star-fill star-fill-icon md-icon @(IsUnderRating(1)?"":"d-none")"></i>
+                            </label>
+                            <input type="radio" id="star2" name="rating" value="2" />
+                            <label for="star2" title="Bad">
+                                <i class="bi bi-star star-icon md-icon @(IsUnderRating(2)?"d-none":"")"></i>
+                                <i class="bi bi-star-fill star-fill-icon md-icon @(IsUnderRating(2)?"":"d-none")"></i>
+                            </label>
+                            <input type="radio" id="star3" name="rating" value="3" />
+                            <label for="star3" title="Average">
+                                <i class="bi bi-star star-icon md-icon @(IsUnderRating(3)?"d-none":"")"></i>
+                                <i class="bi bi-star-fill star-fill-icon md-icon @(IsUnderRating(3)?"":"d-none")"></i>
+                            </label>
+                            <input type="radio" id="star4" name="rating" value="4" />
+                            <label for="star4" title="Good">
+                                <i class="bi bi-star star-icon md-icon @(IsUnderRating(4)?"d-none":"")"></i>
+                                <i class="bi bi-star-fill star-fill-icon md-icon @(IsUnderRating(4)?"":"d-none")"></i>
+                            </label>
+                            <input type="radio" id="star5" name="rating" value="5" />
+                            <label for="star5" title="Very good">
+                                <i class="bi bi-star star-icon md-icon @(IsUnderRating(5)?"d-none":"")"></i>
+                                <i class="bi bi-star-fill star-fill-icon md-icon @(IsUnderRating(5)?"":"d-none")"></i>
+                            </label>
+                        </div>
+                    </form>
+                </div>
+            }
+
+            <div class="row mission-infoItem-wrapper row-cols-2 row-cols-xl-4 g-3 mb-4">
+                <div class="col">
+                    <div class="mission-info-item rounded p-3">
+                        <i class="bi bi-geo-alt md-icon"></i>
+                        <div class="item-content">
+                            <small class="label">City</small><br />
+                            <div class="value">@_Mission.City.Name</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mission-info-item rounded p-3">
+                        <i class="bi bi-globe md-icon"></i>
+                        <div class="item-content">
+                            <small class="label">Theme</small><br />
+                            <div class="value">@_Mission.Theme.Title</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mission-info-item rounded p-3">
+                        <i class="bi bi-calendar-week md-icon"></i>
+                        <div class="item-content">
+                            <small class="label">Date</small><br />
+                            @if (missionStartDate != null && missionEndDate != null)
+                            {
+                                <div class="value">@missionStartDate to @missionEndDate</div>
+                            }
+                            else
+                            {
+                                <div class="value">Ongoing Opportunity</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mission-info-item rounded p-3">
+                        <i class="bi bi-people md-icon"></i>
+                        <div class="item-content">
+                            <small class="label">Organization</small><br />
+                            <div class="value">@_Mission.OrganizationName</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mission-action p-3 content-center mb-4">
+                @{
+                    bool isMissionApplicable = true;
+                    if(_Mission.UserApplied)
+                        isMissionApplicable = false;
+                    if(_Mission.MissionType=="time" && _Mission.TotalVolunteers >= _Mission.GoalMission?.GoalValue)
+                        isMissionApplicable = false;
+                }
+                <a class="btn primary-btn action-btn py-2 px-4 @(!isMissionApplicable ? "" : "d-none")" href="#mission-details" id="view-mission-details-btn">
+                    View Details
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+                <button class="btn primary-btn action-btn py-2 px-4 @(isMissionApplicable ? "" : "d-none")" id="apply-mission-btn" value=@_Mission.MissionId>
+                    Apply Now
+                    <i class="bi bi-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row gx-5 gy-4 mb-5">
+        <div class="col-12 col-md-7 col-lg-8">
+            <div class="navtabs-container h-100">
+                <ul class="nav nav-tabs mb-4">
+                    <li class="nav-item">
+                        <button class="nav-link active" aria-current="page" href="#">Mission</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" href="#">Organization</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" href="#">Comments</button>
+                    </li>
+                </ul>
+                <div id="mission-details">
+                    <div class="tab-content">
+                        <p>
+                            @Html.Raw(_Mission.Description)
+                        </p>
+                        @if (_Mission.MissionDocuments.Count() > 0)
+                        {
+                            <div class="mission-documents mt-3">
+                                <h3 class="h3">Documents</h3>
+                                <div class="documents-wrapper d-flex flex-wrap gap-2">
+                                    @foreach (MissionDocument missionDocument in _Mission.MissionDocuments)
+                                    {
+                                        <a class="btn doc-link rounded-pill" href="@missionDocument.DocumentPath" download>
+                                            @switch (missionDocument.DocumentType)
+                                            {
+                                                case "pdf":
+                                                    <i class="bi bi-filetype-pdf md-icon"></i>
+                                                    break;
+                                                case "docx":
+                                                    <i class="bi bi-filetype-docx md-icon"></i>
+                                                    break;
+                                                case "pptx":
+                                                    <i class="bi bi-filetype-pptx md-icon"></i>
+                                                    break;
+                                                case "xlsx":
+                                                    <i class="bi bi-filetype-xlsx md-icon"></i>
+                                                    break;
+                                                default: break;
+                                            }
+                                            @missionDocument.DocumentName
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="tab-content d-none">
+                        <h5>@_Mission.OrganizationName</h5>
+                        <p class="content">
+                            @Html.Raw(_Mission.OrganizationDetail)
+                        </p>
+                    </div>
+                    <div class="tab-content d-none">
+                        <div class="comment-form-container mb-4">
+                            @if (userIdentifier != null)
+                            {
+                                <form id="comment-form">
+                                    <input type="hidden" name="MissionId" value=@_Mission.MissionId />
+                                    <input type="hidden" name="UserId" value=@userIdentifier?.Value />
+                                    <div class="input-container">
+                                        <textarea class="form-control input" name="CommentText" placeholder="Enter your comments..." id="CommentText"></textarea>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                    <button type="submit" class="btn primary-btn mt-3">Post comment</button>
+                                </form>
+                            }
+                        </div>
+                        <div class="mission-comments-container p-3">
+                            <div class="mission-comments-wrapper" id="mission-comments-wrapper">
+                                <partial name="~/Areas/Users/Views/Shared/_VolunteeringMissionComments.cshtml" model=_Mission.Comments />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-5 col-lg-4">
+            <div class="information-container p-3 mb-5">
+                <div class="title-underline-wrapper mb-3">
+                    <h3 class="h3 title pb-3">Information</h3>
+                </div>
+                <div class="information-wrapper">
+                    <table class="table">
+                        <tr>
+                            <th>Skills</th>
+                            <td>
+                                @foreach (var skill in _Mission.MissionSkills)
+                                {
+                                    <span>@skill.Skill.SkillName, </span>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Days</th>
+                            <td>@_Mission.Availability</td>
+                        </tr>
+                        <tr>
+                            <th>Ratings</th>
+                            <td>
+                                @for (int j = 1; j <= 5; j++)
+                                {
+                                    if (j <= _Mission.Ratings)
+                                    {
+                                        <span><i class="bi bi-star-fill icon-primary"></i></span>
+                                    }
+                                    else
+                                    {
+                                        <span><i class="bi bi-star-fill icon-unset"></i></span>
+                                    }
+                                }
+                                <span>(by @_Mission.RatedBy volunteers)</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="recent-volunteers-container" id="recent-volunteers-container">
+                <partial name="~/Areas/Users/Views/Shared/_MissionRecentVolunteers.cshtml" model="missionRecentVolunteers"></partial>
+            </div>
+        </div>
+    </div>
+</section>
+
+@if (_Mission.RelatedMissions.Count() > 0)
+{
+    <div class="hr-divider my-5"></div>
+    <section class="related-mission-container">
+        <h2 class="h2 text-center mb-4">Related Missions</h2>
+        <div class="mission-main row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 grid-view mb-3">
+            @for (int i = 0; i < _Mission.RelatedMissions.Count(); i++)
+            {
+                <div class="col mission-card">
+                    <div class="card">
+                        <div class="row h-100">
+                            <div class="mission-img-content col-12">
+                                <div class="mission-img-wrapper">
+                                    @if (_Missions[i].MissionCardMedia != null)
+                                    {
+                                        <img src="@_Missions[i].MissionCardMedia.MediaPath" class="card-img-top">
+                                    }
+                                    else
+                                    {
+                                        <img src="~/assets/no-image-available.png" class="card-img-top">
+                                    }
+                                    <div class="card-img-content card-img-overlay">
+                                        <button class="btn rounded-pill content-btn content-center">
+                                            <i class="bi bi-geo-alt md-icon"></i>
+                                            <span class="ms-1">@_Missions[i].CityName</span>
+                                        </button>
+                                        <div class="content-action-wrapper">
+                                            <form method="post" class="mission-favorite-form">
+                                                @if (userIdentifier != null)
+                                                {
+                                                    <input type="hidden" name="MissionId" value=@_Missions[i].MissionId />
+                                                    <input type="hidden" name="UserId" value=@userIdentifier?.Value />
+                                                }
+                                                <button type="submit" class="btn rounded-circle content-action-btn content-center mb-2 favorite-btn" data-bs-toggle="tooltip" data-bs-title="Favorite">
+                                                    @if (_Missions[i].IsFavorite)
+                                                    {
+                                                        <i class="bi bi-heart-fill favorite-icon md-icon icon-primary"></i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="bi bi-heart favorite-icon md-icon"></i>
+                                                    }
+                                                </button>
+                                            </form>
+                                            <button class="btn rounded-circle content-action-btn content-center recommend-to-coWorkers-btn" data-invite-mission-id=@_Missions[i].MissionId data-bs-toggle="tooltip" data-bs-title="Invite">
+                                                <i class="bi bi-person-plus md-icon"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    @if (_Missions[i].UserApplied)
+                                    {
+                                        <span class="status-badge badge bg-success bg-opacity-75">Applied</span>
+                                    }
+                                    else if (_Missions[i].EndDate < DateTime.Now)
+                                    {
+                                        <span class="status-badge badge bg-warning bg-opacity-75">Closed</span>
+                                    }
+                                    <span class="badge rounded-pill card-theme">@_Missions[i].ThemeTitle</span>
+                                </div>
+                            </div>
+                            <div class="mission-content col-12 d-flex flex-column justify-content-between">
+                                <div class="card-body">
+                                    <div class="title-text-wrapper">
+                                        <h5 class="card-title">@_Missions[i].Title</h5>
+                                        <p class="card-text">@_Missions[i].ShortDescription</p>
+                                    </div>
+                                    <div class="overview-ratings-wrapper d-flex justify-content-between">
+                                        <div class="mission-overview d-flex column-gap-3">
+                                            <div class="overview-item d-none visible-on-list">
+                                                <i class="bi bi-geo-alt"></i>
+                                                <span>@_Missions[i].CityName</span>
+                                            </div>
+                                            <div class="overview-item d-none visible-on-list">
+                                                <i class="bi bi-globe"></i>
+                                                <span>@_Missions[i].ThemeTitle</span>
+                                            </div>
+                                            <div class="overview-item">
+                                                <i class="bi bi-people"></i>
+                                                <span>@_Missions[i].OrganizationName</span>
+                                            </div>
+                                        </div>
+                                        <div class="mission-ratings">
+                                            @for (int j = 1; j <= 5; j++)
+                                            {
+                                                if (j <= _Missions[i].Ratings)
+                                                {
+                                                    <span><i class="bi bi-star-fill icon-primary"></i></span>
+                                                }
+                                                else
+                                                {
+                                                    <span><i class="bi bi-star-fill icon-unset"></i></span>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="details-action-container d-flex flex-column">
+                                    <div class="details-timeline">
+                                        @{
+                                            string missions_StartDate = null, missions_EndDate = null;
+                                            if (_Missions[i].StartDate != null)
+                                            {
+                                                missions_StartDate = ((DateTime)_Missions[i].StartDate).ToString("dd/MM/yyyy").Replace("-", "/");
+                                            }
+                                            if (_Missions[i].EndDate != null)
+                                            {
+                                                missions_EndDate = ((DateTime)_Missions[i].EndDate).ToString("dd/MM/yyyy").Replace("-", "/");
+                                            }
+                                        }
+                                        <div class="badge-divider">
+                                            @if (_Missions[i].GoalObjectiveText != null)
+                                            {
+                                                <div class="badge rounded-pill card-body-badge">
+                                                    @_Missions[i].GoalObjectiveText
+                                                </div>
+                                            }
+                                            else if (missions_StartDate != null && missions_EndDate != null)
+                                            {
+                                                <div class="badge rounded-pill card-body-badge">
+                                                    From @missions_StartDate until @missions_EndDate
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="badge rounded-pill card-body-badge">
+                                                    Ongoing Opportunity
+                                                </div>
+                                            }
+                                        </div>
+                                        <div class="info-container ps-3 pe-3 pt-1 pb-1 d-flex justify-content-between column-gap-3">
+                                            @{
+                                                int countInfoBox = 0;
+                                            }
+                                            @if (_Missions[i].MissionType == "time" && _Missions[i].GoalValue != null)
+                                            {
+                                                <div class="info-box content-center">
+                                                    <i class="bi bi-person-check lg-icon"></i>
+                                                    <div class="info">
+                                                        <strong class="info-strong">@(_Missions[i].GoalValue - _Missions[i].TotalVolunteers)</strong>
+                                                        <div class="info-for">Seats left</div>
+                                                    </div>
+                                                </div>
+                                                countInfoBox++;
+                                            }
+                                            @if (_Missions[i].MissionType == "goal" && _Missions[i].GoalValue != null && _Missions[i].GoalAchieved != null)
+                                            {
+                                                var barPercent = _Missions[i].GoalValue == 0 ? 0 : (_Missions[i].GoalAchieved * 100) / _Missions[i].GoalValue;
+                                                <div class="info-box content-center flex-grow-1">
+                                                    <i class="bi bi-bullseye lg-icon"></i>
+                                                    <div class="info">
+                                                        <div class="progress" role="progressbar" aria-label="Danger example" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                                                            <div class="progress-bar" style="width: @barPercent%"></div>
+                                                        </div>
+                                                        <div class="info-for">@_Missions[i].GoalAchieved Achieved</div>
+                                                    </div>
+                                                </div>
+                                                countInfoBox++;
+                                            }
+                                            @if (_Missions[i].RegistrationDeadline != null)
+                                            {
+                                                var registrationDeadline = ((DateTime)_Missions[i].RegistrationDeadline).ToString("dd/MM/yyyy").Replace("-", "/");
+                                                <div class="info-box content-center">
+                                                    <i class="bi bi-clock lg-icon "></i>
+                                                    <div class="info">
+                                                        <strong class="info-strong">@registrationDeadline</strong>
+                                                        <div class="info-for">Deadline</div>
+                                                    </div>
+                                                </div>
+                                                countInfoBox++;
+                                            }
+                                            <div class="info-box @(countInfoBox>=2 ? "d-none visible-on-list":"")">
+                                                <i class="bi bi-person lg-icon"></i>
+                                                <div class="info">
+                                                    <strong class="info-strong">@_Missions[i].TotalVolunteers</strong>
+                                                    <div class="info-for">Already Volunteered</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mission-action p-3 content-center">
+                                        @if (_Missions[i].UserApplied)
+                                        {
+                                            <a class="btn primary-btn action-btn" href="/Users/Home/VolunteeringMission/@_Missions[i].MissionId">
+                                                View Details
+                                                <i class="bi bi-arrow-right"></i>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a class="btn primary-btn action-btn" href="/Users/Home/VolunteeringMission/@_Missions[i].MissionId">
+                                                Apply
+                                                <i class="bi bi-arrow-right"></i>
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+}
+
+<div class="modal fade" id="recommend-to-coWorkers-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header row">
+                <div class="col-12 mb-3 d-flex justify-content-between align-items-center">
+                    <h1 class="modal-title fs-5" id="recommend-to-coWorkers">Recommend to Co-Workers</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="input-container col-12">
+                    <input class="form-control input" id="search-coWorker" placeholder="Search for Co-Worker">
+                </div>
+            </div>
+            <div class="modal-body" id="coWorkers-modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/Home/VolunteeringMission.js" asp-append-version="true"></script>
+}

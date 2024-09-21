@@ -1,0 +1,93 @@
+﻿@model List<User>
+
+@if (Model.Count() > 0)
+{
+    <ul class="list-group list-group-flush" id="coWorkers-list">
+        @foreach (User coWorker in Model)
+        {
+            <li class="list-group-item d-flex justify-content-between">
+                <div class="coWorker-avatar-name flex-grow-1">
+                    @if (coWorker.Avatar != null)
+                    {
+                        <img src="@coWorker.Avatar" class="coWorker-avatar me-2">
+                    }
+                    else
+                    {
+                        <img src="~/assets/user-profile-avatar.svg" class="coWorker-avatar me-2">
+                    }
+                    <span class="coWorker-name">@coWorker.FirstName @coWorker.LastName</span>
+                </div>
+                <div class="coWorker-action-wrapper">
+                    <button type="button" class="btn primary-btn coWorker-recommend-btn" data-coworker-id=@coWorker.UserId>Invite</button>
+                </div>
+            </li>
+        }
+    </ul>
+}
+<div class="content-center d-none" id="coWorkers-not-found">
+    No Co-Workers found!
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        //$("#recommend-to-coWorkers-modal #search-coWorker").on('input', function(){
+        //    if(userIdentifier)
+        //        getCoWorkers(userIdentifier, $(this).val());
+        //})
+        $(".coWorker-action-wrapper .coWorker-recommend-btn")?.on('click', function () {
+            if (userIdentifier) {
+                recommendToCoWorker(inviteMissionId, userIdentifier, +$(this).data('coworkerId'))
+            } else {
+                GoToLogin(window.location.pathname);
+            }
+        })
+
+        function recommendToCoWorker(missionId, userId, coWorkerId) {
+            $.ajax({
+                method: 'POST',
+                url: '/Users/VolunteeringMission/RecommendToCoWorker',
+                data: { missionId: missionId, userId: userId, coWorkerId: coWorkerId },
+                success: function (response) {
+                    toastr.success(response.message, response.title, toastrOptions_General);
+                },
+                error: function (xhr, status, error) {
+                    console.log("Ajax error : " + error);
+                    toastr.error('Sorry recommendation has not been sent because of some issues!', 'Recommendation not sent', toastrOptions_General);
+                }
+            })
+        }
+
+        $("#recommend-to-coWorkers-modal #search-coWorker").on('input', function (e) {
+            let searchInput = $.trim(this.value.toLowerCase());
+            let coWorkersNotFoundEl = $("#recommend-to-coWorkers-modal #coWorkers-not-found");
+            coWorkersNotFoundEl.addClass('d-none');
+            const coWorkersListItems = $("#coWorkers-list .list-group-item");
+            if (searchInput) {
+                let coWorkerCounts = 0;
+                coWorkersListItems.each(function () {
+                    let coWorkderName = $(this).find(".coWorker-name").text().toLowerCase();
+                    if (coWorkderName.search(searchInput) != -1) {
+                        coWorkerCounts++;
+                        $(this).removeClass("d-none");
+                    } else {
+                        $(this).addClass("d-none");
+                    }
+                })
+                //console.log(coWorkersListItems.not(".d-none").length);
+                //if(coWorkersListItems.not(".d-none").length <= 0){
+                //    coWorkersNotFoundEl.removeClass('d-none');
+                //} else {
+                //    coWorkersNotFoundEl.addClass('d-none');
+                //}
+                if (coWorkerCounts == 0) {
+                    coWorkersNotFoundEl.removeClass('d-none');
+                }
+            } else {
+                coWorkersListItems.each(function () {
+                    $(this).removeClass("d-none");
+                })
+            }
+        })
+    })
+</script>
+

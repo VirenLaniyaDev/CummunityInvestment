@@ -1,0 +1,441 @@
+﻿/****** Volunteering Mission Container ******/
+.volunteering-mission-container {
+    overflow: hidden;
+}
+
+/*** Mission Images Container ***/
+.mission-images-container .mission-images-wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.mission-images-wrapper .expanded-img-view {
+    width: 100%;
+    max-height: 625px;
+    height: 100%;
+    border: 1px solid var(--border-clr);
+}
+
+    .mission-images-wrapper .expanded-img-view .expanded-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+/* Carousel or Img Slider container */
+.img-slider-container #mission-imgs-slider .carousel-inner {
+    height: 120px;
+}
+
+.img-slider-container .carousel-inner .carousel-item,
+.img-slider-container .carousel-item .slide-row,
+.slide-row .slider-img-wrapper {
+    height: 100%;
+}
+
+    .slide-row .slider-img-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        cursor: pointer;
+    }
+
+.img-slider-container .carousel > [class^="carousel-control"] {
+    background-color: #000000;
+    width: 5%;
+}
+
+.img-slider-container .carousel .carousel-control-prev {
+    justify-content: flex-start;
+}
+
+.img-slider-container .carousel .carousel-control-next {
+    justify-content: flex-end;
+}
+
+/*** Info Action Container ***/
+.info-actions-wrapper .short-description {
+    font-size: 16px;
+}
+
+.badge-divider {
+    display: flex;
+    align-items: center;
+}
+
+    .badge-divider::before,
+    .badge-divider::after {
+        display: block;
+        content: "";
+        width: 100%;
+        height: 1px;
+        background-color: var(--border-clr);
+    }
+
+    .badge-divider .card-body-badge {
+        padding: 0.5rem 1rem;
+        font-size: 17px;
+        font-weight: normal;
+        color: var(--font-clr);
+        border: 1px solid var(--border-clr);
+    }
+
+#coWorkers-list .list-group-item.active {
+    background-color: var(--border-clr);
+    border-radius: var(--bs-border-radius);
+    border: 2px solid white;
+}
+
+/* Recommend to Co-Workers */
+.coWorker-avatar-name .coWorker-avatar {
+    width: 42px;
+    height: 42px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* info-container */
+.info-actions-wrapper .info-container {
+    border-bottom: 1px solid var(--border-clr);
+}
+
+.info-container .info-box {
+    width: 100%;
+    display: flex;
+    column-gap: 0.5rem;
+}
+
+.info-box .info {
+    width: 75%;
+}
+
+    .info-box .info .info-strong {
+        font-size: 20px;
+    }
+
+.info-box .info-for {
+    font-size: 16px;
+}
+
+.info .progress {
+    height: 12px;
+    background-color: var(--border-clr);
+}
+
+.progress .progress-bar {
+    background-color: var(--primary-clr) !important;
+}
+
+/* Feedback Rating */
+.feedback-rate > input {
+    display: none;
+}
+
+    .feedback-rate > input ~ label .star-icon {
+        color: var(--secondary-clr);
+    }
+
+    .feedback-rate > input ~ label .star-fill-icon {
+        color: var(--primary-clr);
+    }
+
+/* Mission Info Items */
+.mission-infoItem-wrapper .mission-info-item {
+    height: 130px;
+    border: 1px solid var(--border-clr);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+    .mission-infoItem-wrapper .mission-info-item .value {
+        line-height: 100%;
+        font-weight: 500;
+    }
+
+/* Mission Action */
+.mission-action .action-btn {
+    font-size: 20px;
+}
+
+
+/* Mission Nav tabs */
+.navtabs-container .nav-tabs .nav-item .nav-link {
+    border-left: none !important;
+    border-right: none !important;
+    border-top: none !important;
+    color: var(--secondary-clr);
+}
+
+    .navtabs-container .nav-tabs .nav-item .nav-link:hover {
+        border-bottom: 3px solid var(--secondary-clr);
+    }
+
+.navtabs-container .nav-item .active {
+    color: var(--font-clr) !important;
+    font-weight: 500;
+    border-bottom: 3px solid var(--font-clr) !important;
+}
+
+.navtabs-container .mission-documents .doc-link {
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--border-clr);
+}
+
+    .navtabs-container .mission-documents .doc-link:hover,
+    .navtabs-container .mission-documents .doc-link:hover {
+        background-color: var(--border-clr);
+    }
+
+/* Comments */
+.navtabs-container .mission-comments-container {
+    height: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    background-color: var(--hover-bg-clr);
+}
+
+.mission-comments-container .mission-comments-wrapper {
+}
+
+.mission-comments-container .comment-card {
+    border: none;
+}
+
+.comment-card .comment-img-wrapper {
+    min-width: 72px;
+}
+
+.comment-card .commentor-img {
+    width: 80%;
+    height: auto;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    max-width: 70px;
+    max-height: 70px;
+    border-radius: 50%;
+}
+
+.comment-card .commentor-name {
+    font-size: 18px;
+}
+
+.comment-card .comment-text {
+    font-size: 15px;
+}
+
+/* Information container */
+.information-container,
+.recent-volunteers-container {
+    border: 1px solid var(--border-clr);
+}
+
+.title-underline-wrapper {
+    border-bottom: 1px solid var(--border-clr);
+}
+
+    .title-underline-wrapper .title {
+        width: fit-content;
+        margin-bottom: 0;
+        border-bottom: 2px solid var(--secondary-clr);
+    }
+
+.information-wrapper .table * {
+    font-size: 15px;
+}
+
+.information-wrapper .table th,
+.information-wrapper .table td {
+    padding: 0.8rem;
+}
+
+/* Volunteer container */
+.volunteer .volunteer-img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.volunteer .volunteer-name {
+    font-size: 13px;
+}
+/* Volunteer pagination */
+.volunteer-pagination .pagination {
+    border-top: 1px solid var(--border-clr);
+    margin: 0;
+}
+
+    .volunteer-pagination .pagination .pagination-description {
+        font-size: 14px;
+        width: 100%
+    }
+
+    .volunteer-pagination .pagination .page-link {
+        border-radius: 0;
+        border: none;
+        border-left: 1px solid var(--border-clr);
+        border-right: 1px solid var(--border-clr);
+        box-shadow: none !important;
+    }
+
+
+/****** Volunteering Mission Container ******/
+/* Missions Card */
+.mission-main .col {
+    min-height:100% !important;
+}
+
+.mission-card .card {
+    height:100%;
+    border: none;
+    box-shadow: 0 0 8px var(--border-clr);
+}
+
+.mission-img-wrapper {
+    position: relative;
+    height: 220px;
+}
+
+    .mission-img-wrapper .card-img-top {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 0;
+    }
+
+    .mission-img-wrapper .card-img-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+.card-img-content .content-btn {
+    height: 36px;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.content-btn *,
+.content-action-btn * {
+    color: #FFFFFF;
+}
+
+.content-action-wrapper .content-action-btn {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0.4) !important;
+}
+
+.mission-img-wrapper .status-badge {
+    position: absolute;
+    padding: 0.5rem 1rem;
+    top: 10%;
+    left: -2px;
+    border-radius: 0 18px 18px 0;
+    font-size: 16px;
+}
+
+.mission-img-wrapper .card-theme {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: normal;
+    font-size: 16px;
+    background-color: #FFFFFF;
+    color: var(--font-clr);
+}
+
+/* Card body */
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    row-gap: 16px;
+}
+
+.title-text-wrapper .card-title {
+    font-weight: 500;
+    font-size: 26px;
+}
+
+.title-text-wrapper .card-text {
+    font-size: 15px;
+}
+
+
+.details-action-container {
+}
+
+    .details-action-container .details-timeline {
+        width: 100%;
+    }
+
+.details-timeline .badge-divider {
+    display: flex;
+    align-items: center;
+}
+
+.mission-card .badge-divider::before,
+.mission-card .badge-divider::after {
+    display: block;
+    content: "";
+    width: 100%;
+    height: 1px;
+    background-color: var(--border-clr);
+}
+
+.mission-card .badge-divider .card-body-badge {
+    font-size: 15px;
+    font-weight: normal;
+    color: var(--font-clr);
+    border: 1px solid var(--border-clr);
+}
+
+.details-timeline .info-container {
+}
+
+.info-container .info-box {
+    width: 100%;
+    display: flex;
+    column-gap: 0.5rem;
+}
+
+.mission-card .info-box .info {
+    width: 100%;
+}
+
+    .mission-card .info-box .info .info-strong {
+        font-size: 18px;
+    }
+
+.mission-card .info-box .info-for {
+    font-size: 15px;
+}
+
+.mission-card .info .progress {
+    height: 12px;
+    background-color: var(--border-clr);
+}
+
+.mission-card .progress .progress-bar {
+    background-color: var(--primary-clr) !important;
+}
+
+.mission-card .mission-action {
+    border-top: 1px solid var(--border-clr);
+}
+
+    .mission-card .mission-action .action-btn {
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+/*-*-*-*-*-* Responsive (Media query) *-*-*-*-*-*/
+@media(max-width: 576px) {
+    .img-slider-container #mission-imgs-slider .carousel-inner {
+        height: 80px;
+    }
+}

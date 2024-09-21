@@ -1,0 +1,83 @@
+﻿@{
+    ViewData["Title"] = "Volunteering Timesheet";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles{
+    <link href="https://cdn.datatables.net/v/bs5/dt-1.13.4/r-2.4.1/sl-1.6.2/datatables.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href=@Url.Content("~/css/UserActivity/VolunteeringTimesheet.css") asp-append-version="true" />
+    <script src="https://cdn.datatables.net/v/bs5/dt-1.13.4/sl-1.6.2/datatables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+}
+
+<h1 class="mb-5">Volunteering Timesheet</h1>
+
+<div class="vt-container">
+    <div class="row g-4">
+        <div class="col-12 col-md-6 ">
+            <div class="timesheet-container p-4" id="timeBasedTimesheet-container">
+                <div class="timesheet-head mb-3">
+                    <h5>Volunteering hours</h5>
+                    <button type="button" class="btn primary-btn add-timesheet-entry-btn" value="time">
+                        <i class="bi bi-plus-lg rg-icon"></i>
+                        <span>Add</span>
+                    </button>
+                </div>
+                <div class="timesheet-main">
+                    <div class="timesheet-table-wrapper">
+                        <input class="form-control form-control-sm input timesheet-search mb-3" id="timeBasedTimesheet-table-search" placeholder="Search your Time mission timesheet" />
+                        <table class="table table-borderless table-hover timesheet-table align-middle" id="timeBasedTimesheet-table">
+                            <thead class="">
+                                <tr>
+                                    <th scope="col" class="fw-medium">Mission</th>
+                                    <th scope="col" class="fw-medium">Date</th>
+                                    <th scope="col" class="fw-medium">Hours</th>
+                                    <th scope="col" class="fw-medium">Minutes</th>
+                                    <th scope="col" class="fw-bold"></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="timesheet-container p-4" id="goalBasedTimesheet-container">
+                <div class="timesheet-head mb-3">
+                    <h5>Volunteering Goals</h5>
+                    <button type="button" class="btn primary-btn add-timesheet-entry-btn" value="goal">
+                        <i class="bi bi-plus-lg rg-icon"></i>
+                        <span>Add</span>
+                    </button>
+                </div>
+                <div class="timesheet-main">
+                    <div class="timesheet-table-wrapper">
+                        <input class="form-control form-control-sm input timesheet-search mb-3" id="goalBasedTimesheet-table-search" placeholder="Search your Goal mission timesheet" />
+                        <table class="table table-borderless table-hover timesheet-table align-middle" id="goalBasedTimesheet-table">
+                            <thead class="">
+                                <tr>
+                                    <th scope="col" class="fw-medium">Mission</th>
+                                    <th scope="col" class="fw-medium">Date</th>
+                                    <th scope="col" class="fw-medium">Action</th>
+                                    <th scope="col" class="fw-bold"></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="vt-addOrUpdate-timesheet-modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addOrUpdateTimesheet">
+            <div class="modal-dialog modal-dialog-centered modal-lg" id="vt-addOrUpdate-timesheet-dialog">
+            </div>
+        </div>
+        <partial name="_RemoveItemConfirmModal"></partial>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/UserActivity/VolunteeringTimesheet.js" asp-append-version="true"></script>
+}
+

@@ -1,0 +1,39 @@
+﻿@model List<CmsPage>
+
+@{
+    ViewData["Title"] = "Privacy and Cookies Policy";
+}
+
+@section Styles{
+    <link rel="stylesheet" href="@Url.Content("~/css/Home/Policy.css")" asp-append-version="true" />
+}
+
+<h1 class="main-page-title mb-5">@ViewData["Title"]</h1>
+
+<div class="pcp-container">
+    <div class="row">
+        <div class="col-3">
+            <div class="pcp-policy-title-list-wrapper">
+                <div id="pcp-policy-title-list" class="list-group list-group-flush">
+                    @foreach (CmsPage policyContent in Model)
+                    {
+                        <a class="list-group-item list-group-item-action" href="#@policyContent.Slug-@policyContent.CmsPageId">
+                            <span>@policyContent.Title</span>
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-9">
+            <div data-bs-spy="scroll" data-bs-target="#pcp-policy-title-list" data-bs-smooth-scroll="true" class="scrollspy-example" tabindex="0">
+                @foreach (CmsPage policyContent in Model)
+                {
+                    <h3 id="@policyContent.Slug-@policyContent.CmsPageId" class="mb-3">@policyContent.Title</h3>
+                    @Html.Raw(policyContent.Description)
+                    <hr class="my-5" />
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,80 @@
+﻿<head>
+    <link rel="stylesheet" href=@Url.Content("~/css/Shared/_UserNotifications.css") asp-append-version="true" />
+</head>
+
+<div class="notification-container position-relative">
+    <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+        <i class="bi bi-bell md-icon"></i>
+        <span class="position-absolute start-75 translate-middle badge rounded-pill notification-count-badge d-none"></span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end notification-list px-0 w-100">
+        <li class="d-flex justify-content-between align-items-center mb-2">
+            <button type="button" class="btn" id="notification-settings-btn">
+                <i class="bi bi-gear-fill"></i>
+            </button>
+            <button type="button" class="btn d-none" id="back-to-notifications-btn">
+                <i class="bi bi-arrow-left"></i>
+            </button>
+            <h5 class="mb-0 notification-heading">Notification</h5>
+            <h5 class="mb-0 notification-heading d-none">Notification Settings</h5>
+            <button type="button" class="btn clear-all-notification-btn">
+                Clear all
+            </button>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li id="notifications-list-wrapper">
+            <ul class="list-group list-group-flush" id="notifications-list"></ul>
+        </li>
+        <li class="d-none" id="notification-settings-wrapper">
+            <form id="notification-settings-form">
+                <ul class="list-group list-group-flush" id="notification-settings-list">
+                    <li class="list-group-item bg-light">
+                        <h5 class="dropdown-header text-start p-0">Get a notification for</h5>
+                    </li>
+                    <li class="list-group-item">
+                        <label class="form-check-label stretched-link" for="RecommendedMissions">Recommended Missions</label>
+                        <input class="form-check-input me-1" type="checkbox" name="RecommendedMissions" value=1 id="RecommendedMissions">
+                    </li>
+                    <li class="list-group-item">
+                        <label class="form-check-label stretched-link" for="VolunteeringHours">Volunteering Hours</label>
+                        <input class="form-check-input me-1" type="checkbox" name="VolunteeringHours" value=1 id="VolunteeringHours">
+                    </li>
+                    <li class="list-group-item">
+                        <label class="form-check-label stretched-link" for="VolunteeringGoals">Volunteering Goals</label>
+                        <input class="form-check-input me-1" type="checkbox" name="VolunteeringGoals" value=1 id="VolunteeringGoals">
+                    </li>
+                    <li class="list-group-item">
+                        <label class="form-check-label stretched-link" for="UserComments">User Comments</label>
+                        <input class="form-check-input me-1" type="checkbox" name="UserComments" value=1 id="UserComments">
+                    </li>
+                    <li class="list-group-item">
+                        <label class="form-check-label stretched-link" for="UserStories">User Stories</label>
+                        <input class="form-check-input me-1" type="checkbox" name="UserStories" value=1 id="UserStories">
+                    </li>
+                    <li class="list-group-item">
+                        <label class="form-check-label stretched-link" for="NewMissions">New Missions</label>
+                        <input class="form-check-input me-1" type="checkbox" name="NewMissions" value=1 id="NewMissions">
+                    </li>
+                    <li class="list-group-item">
+                        <label class="form-check-label stretched-link" for="NewMessages">New Messages</label>
+                        <input class="form-check-input me-1" type="checkbox" name="NewMessages" value=1 id="NewMessages">
+                    </li>
+                    <li class="list-group-item">
+                        <label class="form-check-label stretched-link" for="RecommendedStory">Recommended Story</label>
+                        <input class="form-check-input me-1" type="checkbox" name="RecommendedStory" value=1 id="RecommendedStory">
+                    </li>
+                    <li class="list-group-item">
+                        <label class="form-check-label stretched-link" for="NotificationByEmail">Notification By Email</label>
+                        <input class="form-check-input me-1" type="checkbox" name="NotificationByEmail" value=1 id="NotificationByEmail">
+                    </li>
+                    <li class="list-group-item text-end">
+                        <button type="reset" class="btn secondary-btn notification-settings-cancel-btn">Cancel</button>
+                        <button type="submit" class="btn primary-btn">Save</button>
+                    </li>
+                </ul>
+            </form>
+        </li>
+    </ul>
+</div>
+
+<script src="~/js/Shared/_UserNotification.js" asp-append-version="true"></script>

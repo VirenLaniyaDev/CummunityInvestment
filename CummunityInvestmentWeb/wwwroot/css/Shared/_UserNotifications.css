@@ -1,0 +1,64 @@
+﻿/*** Notification ***/
+.notification-container .notification-count-badge {
+    top: initial;
+    background-color: var(--primary-clr);
+}
+
+.notification-container .dropdown-menu {
+    min-width: 448px;
+    padding: 8px;
+}
+
+    .notification-container .dropdown-menu .clear-all-notification-btn {
+        font-size: 15px;
+    }
+
+.notification-container .notification-list .dropdown-item {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    column-gap: 16px;
+}
+
+.notification-container .notification-list .notification-link {
+    /*border-top: 1px solid var(--border-clr);*/
+}
+
+#notifications-list .list-group-item {
+    padding: 0;
+}
+
+.notification-container .notification-list .dropdown-divider {
+    margin-bottom: 0;
+}
+
+.notification-container .notification-list .notification-message {
+    text-align: start;
+    margin-top: 0.25rem;
+    white-space: normal;
+    flex-grow: 1;
+}
+
+.notification-container .notification-list .notification-unread {
+    margin-top: 0.5rem;
+    min-width: 14px;
+    max-width: 14px;
+    min-height: 14px;
+    max-height: 14px;
+    /*width: 14px!important;
+    height: 14px!important;*/
+    background-color: var(--primary-clr);
+}
+
+.notification-container .notification-list .notification-read {
+    margin-top: 0.25rem;
+    font-size: 14px;
+}
+
+/*Notification settings*/
+.notification-container #notification-settings-list .list-group-item:not(:first-child, :last-child) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: none;
+}
