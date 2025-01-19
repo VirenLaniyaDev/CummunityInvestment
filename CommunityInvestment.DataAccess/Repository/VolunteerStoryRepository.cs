@@ -13,7 +13,6 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using CommunityInvestment.Application.Common;
 
 namespace CommunityInvestment.DataAccess.Repository
